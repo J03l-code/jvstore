@@ -29,6 +29,9 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/layout.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/jvstore.css?v=2.0">
 <?php if(isset($extraCSS)) foreach($extraCSS as $css): ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/<?= $css ?>">

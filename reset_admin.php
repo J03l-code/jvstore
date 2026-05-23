@@ -2,39 +2,25 @@
 require_once 'includes/config.php';
 require_once 'includes/db.php';
 
-// Contraseña nueva
-$new_password = 'admin123';
-$email = 'admin@impordispac.com';
-
 try {
     $db = getDB();
-    $hash = password_hash($new_password, PASSWORD_DEFAULT);
-
-    $stmt = $db->prepare("UPDATE usuarios SET password = ? WHERE email = ? AND rol = 'admin'");
-    $stmt->execute([$hash, $email]);
-
-    if ($stmt->rowCount() > 0) {
-        echo "<h1>¡Éxito!</h1>";
-        echo "<p>La contraseña para <b>$email</b> se ha restablecido a: <b>$new_password</b></p>";
-        echo "<p><a href='login.php'>Ir al Login</a></p>";
+    $hash = password_hash('Admin2026!', PASSWORD_DEFAULT);
+    
+    // Check if user exists first
+    $stmt = $db->query("SELECT id FROM usuarios WHERE email = 'admin@jvstore.com'");
+    if ($stmt->fetch()) {
+        $db->prepare("UPDATE usuarios SET password = ? WHERE email = 'admin@jvstore.com'")->execute([$hash]);
+        echo "<h1>✅ Contraseña actualizada correctamente</h1>";
     } else {
-        echo "<h1>Error</h1>";
-        echo "<p>No se encontró el usuario admin ($email) o la contraseña ya era esa.</p>";
-        // Intentar crear si no existe
-        echo "<p>Intentando crear usuario admin...</p>";
-
-        $stmt = $db->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES ('Administrador', ?, ?, 'admin')");
-        try {
-            $stmt->execute([$email, $hash]);
-            echo "<p style='color:green'>Usuario admin creado correctamente.</p>";
-            echo "<p>Usuario: <b>$email</b></p>";
-            echo "<p>Contraseña: <b>$new_password</b></p>";
-            echo "<p><a href='login.php'>Ir al Login</a></p>";
-        } catch (PDOException $e) {
-            echo "<p style='color:red'>Error al crear: " . $e->getMessage() . "</p>";
-        }
+        $db->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)")
+           ->execute(['Administrador JV', 'admin@jvstore.com', $hash, 'admin']);
+        echo "<h1>✅ Usuario creado y contraseña configurada correctamente</h1>";
     }
-
-} catch (PDOException $e) {
-    echo "Error de BD: " . $e->getMessage();
+    
+    echo "<p>Email: admin@jvstore.com<br>Password: Admin2026!</p>";
+    echo "<p><a href='".BASE_URL."login.php'>Ir al Login</a></p>";
+    echo "<p style='color:red;'><strong>IMPORTANTE:</strong> Elimina este archivo (reset_admin.php) de tu servidor por seguridad.</p>";
+} catch (Exception $e) {
+    echo "<h1>❌ Error</h1>";
+    echo "<p>" . $e->getMessage() . "</p>";
 }

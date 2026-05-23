@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `configuracion` (
 
 -- Admin por defecto (password: Admin2026!)
 INSERT INTO `usuarios` (`nombre`, `email`, `password`, `rol`) VALUES
-('Administrador JV', 'admin@jvstore.com', '$2y$10$TKh8H1.PfMaHGLqRajyB8.MwSUE.XEQoFm7JX67JhixkCr2MuCuva', 'admin');
+('Administrador JV', 'admin@jvstore.com', '$2y$10$i7Y52Ca5wrssmdQczOLKeuKFvGz2itfzbq0FoVbRrd/qT7Yjpkxse', 'admin');
 
 -- Categorías de Productos
 INSERT INTO `categorias` (`nombre`, `slug`, `descripcion`, `icono`, `color`, `tipo`, `orden`, `activo`) VALUES
