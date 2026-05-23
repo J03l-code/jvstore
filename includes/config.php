@@ -26,8 +26,8 @@ if ($is_local) {
 } else {
     // PRODUCCIÓN (Hostinger)
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'u434851126_jvstore_db'); // Nombre de BD en Hostinger
-    define('DB_USER', 'u434851126_jvstore_usr'); // Usuario de BD en Hostinger
+    define('DB_NAME', 'u434851126_jvstore'); // <-- ¡Aquí estaba el error! No llevaba _db al final
+    define('DB_USER', 'u434851126_jvstore_usr');
     define('DB_PASS', 'Jvstore2026!');
 
     define('BASE_URL', 'https://' . $host . '/');
