@@ -68,7 +68,16 @@ $tk       = getSiteConfig('tiktok', '');
     </div>
     <div class="jv-footer-bottom">
       <span>&copy; <?= date('Y') ?> <?= sanitize($siteName) ?>. Todos los derechos reservados.</span>
-      <span>Hecho con <i class="fas fa-heart" style="color:var(--gold)"></i> en Ecuador | <a href="<?= BASE_URL ?>admin/" style="color:inherit;opacity:0.5;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">Acceso Admin</a></span>
+      <span style="display:flex;align-items:center;gap:12px;">
+        <a href="https://jiyanedesign.com" target="_blank" rel="noopener"
+           style="display:inline-flex;align-items:center;gap:7px;color:rgba(200,212,232,0.55);font-size:12px;font-weight:500;text-decoration:none;letter-spacing:0.3px;transition:all 0.3s ease;border-bottom:1px solid transparent;padding-bottom:1px;"
+           onmouseover="this.style.color='#0ea5e9';this.style.borderBottomColor='rgba(14,165,233,0.4)'"
+           onmouseout="this.style.color='rgba(200,212,232,0.55)';this.style.borderBottomColor='transparent'">
+          <i class="fas fa-code" style="font-size:10px;opacity:0.7;"></i>
+          Desarrollado por <strong style="font-weight:700;letter-spacing:0.5px;">JiyandeDesign</strong>
+        </a>
+        <a href="<?= BASE_URL ?>admin/" style="color:inherit;opacity:0.35;text-decoration:none;font-size:11px;transition:opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='0.35'">Acceso Admin</a>
+      </span>
     </div>
   </div>
 </footer>
