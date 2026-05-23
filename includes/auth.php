@@ -82,7 +82,17 @@ function login($email, $password)
 {
     $db = getDB();
 
-    // 1. Intentar como Cliente
+    // 1. Intentar como Usuario (Admin/Staff)
+    $stmt = $db->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
+    $user = $stmt->fetch();
+
+    if ($user && password_verify($password, $user['password'])) {
+        setSessionData($user, 'usuario');
+        return true;
+    }
+
+    // 2. Intentar como Cliente
     $stmt = $db->prepare("SELECT * FROM clientes WHERE email = ?");
     $stmt->execute([$email]);
     $cliente = $stmt->fetch();
@@ -93,16 +103,6 @@ function login($email, $password)
             setSessionData($cliente, 'cliente');
             return true;
         }
-    }
-
-    // 2. Intentar como Usuario (Admin/Staff)
-    $stmt = $db->prepare("SELECT * FROM usuarios WHERE email = ?"); // Removed activo=1check as schema didn't show it explicitly initialized, usually default 1 or not present? SQL showed schemas without activo in usuarios creation, but let's assume standard behavior. Re-reading database.sql... table users doesn't have active column in creation script viewed earlier.
-    $stmt->execute([$email]);
-    $user = $stmt->fetch();
-
-    if ($user && password_verify($password, $user['password'])) {
-        setSessionData($user, 'usuario');
-        return true;
     }
 
     return false;

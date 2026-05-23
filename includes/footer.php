@@ -68,7 +68,7 @@ $tk       = getSiteConfig('tiktok', '');
     </div>
     <div class="jv-footer-bottom">
       <span>&copy; <?= date('Y') ?> <?= sanitize($siteName) ?>. Todos los derechos reservados.</span>
-      <span>Hecho con <i class="fas fa-heart" style="color:var(--gold)"></i> en Ecuador</span>
+      <span>Hecho con <i class="fas fa-heart" style="color:var(--gold)"></i> en Ecuador | <a href="<?= BASE_URL ?>admin/" style="color:inherit;opacity:0.5;text-decoration:none;transition:opacity 0.2s;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.5'">Acceso Admin</a></span>
     </div>
   </div>
 </footer>
