@@ -25,8 +25,8 @@ if (empty($carrito)) {
 $user     = getCurrentUser();
 $subtotal = getCartTotal();
 $iva      = $subtotal * (IVA_PORCENTAJE / 100);
-$envio    = ($subtotal >= ENVIO_GRATIS_DESDE) ? 0.00 : COSTO_ENVIO;
-$total    = $subtotal + $iva + $envio;
+$envio    = 0.00; // El envío se calcula después por WhatsApp
+$total    = $subtotal + $iva;
 
 // ── Procesar pedido (POST) ────────────────────────────────────────────────────
 $error = '';
@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $direccion  = trim($_POST['direccion'] ?? '');
     $telefono   = trim($_POST['telefono']  ?? '');
     $notas      = trim($_POST['notas']     ?? '');
-    $metodoPago = trim($_POST['metodo_pago'] ?? 'transferencia');
+    $metodoPago = 'whatsapp';
 
     if (empty($direccion) || empty($telefono)) {
         $error = 'Por favor completa la dirección y el teléfono.';
@@ -87,10 +87,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             syncCartToDB();
 
             // ── Mensaje de WhatsApp ─────────────────────────────────────────
-            $waNumber = getSiteConfig('whatsapp', WHATSAPP_NUMBER);
+            $waNumber = WHATSAPP_NUMBER;
             $waText   = "🛒 *Nuevo Pedido #{$codigo}*\n\n";
             $waText  .= "*Cliente:* {$user['nombre']}\n";
-            $waText  .= "*Email:* {$user['email']}\n";
             $waText  .= "*Teléfono:* {$telefono}\n";
             $waText  .= "*Dirección:* {$direccion}\n\n";
             $waText  .= "*Artículos:*\n";
@@ -101,10 +100,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $waText .= "\n";
             $waText .= "Subtotal: " . formatPrice($subtotal) . "\n";
             $waText .= "IVA (" . IVA_PORCENTAJE . "%): " . formatPrice($iva) . "\n";
-            $waText .= "Envío: " . formatPrice($envio) . "\n";
-            $waText .= "*TOTAL: " . formatPrice($total) . "*\n\n";
-            $waText .= "Método de pago: {$metodoPago}";
-            if ($notas) $waText .= "\nNotas: {$notas}";
+            $waText .= "*Total (sin envío): " . formatPrice($total) . "*\n";
+            $waText .= "*(El costo de envío será coordinado por este medio)*\n\n";
+            if ($notas) $waText .= "Notas: {$notas}\n";
+            $waText .= "¿Me podrían confirmar mi pedido?";
 
             $waUrl = "https://api.whatsapp.com/send?phone={$waNumber}&text=" . rawurlencode($waText);
 
@@ -343,43 +342,14 @@ require_once 'includes/header.php';
                 </div>
             </div>
 
-            <!-- Método de pago -->
             <div class="checkout-form-card">
-                <h2><i class="fas fa-credit-card"></i> Método de Pago</h2>
-                <div class="metodo-pago-grid">
-                    <div>
-                        <input type="radio" name="metodo_pago" id="m_transferencia" value="transferencia" class="metodo-option" checked>
-                        <label for="m_transferencia" class="metodo-label">
-                            <i class="fas fa-university"></i> Transferencia
-                        </label>
-                    </div>
-                    <div>
-                        <input type="radio" name="metodo_pago" id="m_efectivo" value="efectivo" class="metodo-option">
-                        <label for="m_efectivo" class="metodo-label">
-                            <i class="fas fa-money-bill-wave"></i> Efectivo
-                        </label>
-                    </div>
-                    <div>
-                        <input type="radio" name="metodo_pago" id="m_tarjeta" value="tarjeta" class="metodo-option">
-                        <label for="m_tarjeta" class="metodo-label">
-                            <i class="fas fa-credit-card"></i> Tarjeta
-                        </label>
-                    </div>
-                    <div>
-                        <input type="radio" name="metodo_pago" id="m_whatsapp" value="whatsapp" class="metodo-option">
-                        <label for="m_whatsapp" class="metodo-label">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </label>
-                    </div>
-                </div>
-
                 <button type="submit" class="btn-confirm">
-                    <i class="fas fa-check-circle"></i>
-                    Confirmar Pedido — <?= formatPrice($total) ?>
+                    <i class="fab fa-whatsapp"></i>
+                    Confirmar Pedido y Enviar a WhatsApp
                 </button>
                 <p style="text-align:center;font-size:12px;color:#9ca3af;margin-top:10px">
-                    <i class="fas fa-lock" style="color:#10b981"></i>
-                    Tu pedido será confirmado vía WhatsApp
+                    <i class="fas fa-truck" style="color:#10b981"></i>
+                    El pago y envío se coordinarán por WhatsApp
                 </p>
             </div>
         </form>
@@ -388,12 +358,6 @@ require_once 'includes/header.php';
     <!-- ── Resumen del pedido ───────────────────────────────── -->
     <div class="checkout-summary">
         <h3><i class="fas fa-receipt" style="color:#0ea5e9;margin-right:6px"></i> Tu Pedido</h3>
-
-        <?php if ($envio == 0): ?>
-            <div class="envio-gratis-notice">
-                <i class="fas fa-check-circle"></i> ¡Envío gratis aplicado!
-            </div>
-        <?php endif; ?>
 
         <div class="summary-items">
             <?php foreach ($carrito as $item): ?>
@@ -418,7 +382,7 @@ require_once 'includes/header.php';
         </div>
         <div class="summary-row-num">
             <span>Envío</span>
-            <span><?= $envio == 0 ? '<span style="color:#6ee7b7">GRATIS</span>' : formatPrice($envio) ?></span>
+            <span><span style="color:#9ca3af;font-size:12px">Por coordinar</span></span>
         </div>
 
         <div class="summary-divider"></div>
