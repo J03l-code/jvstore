@@ -29,6 +29,22 @@ function runSQL($db, $sql, $label)
     }
 }
 
+// ── 0. Eliminar FK antiguos que bloquean las inserciones ─────────────────────
+// El FK fk_pedido_usuario exige que usuario_id sea un ID de clientes, lo cual
+// ya no aplica con el nuevo esquema. Se elimina para desbloquear el checkout.
+try {
+    $db->exec("ALTER TABLE `pedidos` DROP FOREIGN KEY `fk_pedido_usuario`");
+    $ok[] = "✅ FK fk_pedido_usuario eliminado";
+} catch (Throwable $e) {
+    // Si no existe, no importa
+    $ok[] = "ℹ️ FK fk_pedido_usuario: no existía o ya fue eliminado";
+}
+
+// También eliminar índice huérfano si existe
+try {
+    $db->exec("ALTER TABLE `pedidos` DROP INDEX `fk_pedido_usuario`");
+} catch (Throwable $e) { /* ignorar */ }
+
 // ── 1. Tabla clientes — columnas extra ───────────────────────────────────────
 runSQL(
     $db,
