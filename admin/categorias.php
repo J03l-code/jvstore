@@ -38,10 +38,11 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   if($action === 'delete'){
     $id = (int)$_POST['id'];
-    $count = $db->prepare("SELECT COUNT(*) FROM productos WHERE categoria_id=?");
-    $count->execute([$id]); $count = $count->fetchColumn();
-    if($count > 0){ setFlash('danger',"No se puede eliminar: tiene $count producto(s) asociado(s)"); }
-    else { $db->prepare("DELETE FROM categorias WHERE id=?")->execute([$id]); setFlash('success','Categoría eliminada'); }
+    // Desvincular productos y servicios antes de borrar
+    $db->prepare("UPDATE productos SET categoria_id = NULL WHERE categoria_id = ?")->execute([$id]);
+    $db->prepare("UPDATE servicios SET categoria_id = NULL WHERE categoria_id = ?")->execute([$id]);
+    $db->prepare("DELETE FROM categorias WHERE id=?")->execute([$id]);
+    setFlash('success','Categoría eliminada. Los productos asociados fueron desvinculados.');
     redirect(BASE_URL.'admin/categorias.php');
   }
   if($action === 'toggle'){

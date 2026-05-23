@@ -65,8 +65,16 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   if($action === 'delete'){
     $id = (int)($_POST['id'] ?? 0);
-    $db->prepare("UPDATE productos SET activo=0 WHERE id=?")->execute([$id]);
-    setFlash('success','Producto eliminado');
+    try {
+      // Eliminar de detalle_pedidos primero para evitar error de llave foránea
+      $db->prepare("DELETE FROM detalle_pedidos WHERE producto_id = ?")->execute([$id]);
+      $db->prepare("DELETE FROM productos WHERE id=?")->execute([$id]);
+      setFlash('success','Producto eliminado permanentemente');
+    } catch (Exception $e) {
+      // Si falla el hard-delete, hacer soft-delete
+      $db->prepare("UPDATE productos SET activo=0 WHERE id=?")->execute([$id]);
+      setFlash('warning','Producto desactivado (no se pudo eliminar por estar en pedidos activos)');
+    }
     redirect(BASE_URL.'admin/productos.php');
   }
 
