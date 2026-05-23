@@ -1,0 +1,207 @@
+2026-03-31 15:04:23 - Request: GET
+Session ID: v294qpj150pekt2a5fi7fhod6h
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-03-31 15:04:47 - Request: POST
+Session ID: v294qpj150pekt2a5fi7fhod6h
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+    [direccion] => Julio arellano y Reinaldo Espinoza
+    [telefono] => +593979359179
+    [notas] => ok
+)
+
+Order Created: 7
+2026-05-08 17:20:32 - Request: GET
+Session ID: 58nh1ismfgdg2qa6q5itkmuugv
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-05-08 17:21:14 - Request: GET
+Session ID: 58nh1ismfgdg2qa6q5itkmuugv
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-05-08 17:21:34 - Request: POST
+Session ID: 58nh1ismfgdg2qa6q5itkmuugv
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+    [direccion] => Julio arellano y Reinaldo Espinoza
+    [telefono] => +593979359179
+    [notas] => 
+)
+
+Order Created: 8
+2026-05-13 21:32:33 - Request: GET
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-05-13 21:32:59 - Request: POST
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+    [direccion] => Julio arellano y Reinaldo Espinoza
+    [telefono] => +593979359179
+    [notas] => test
+)
+
+Order Created: 9
+2026-05-13 21:33:38 - Request: GET
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-05-13 21:33:44 - Request: POST
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+    [direccion] => Julio arellano y Reinaldo Espinoza
+    [telefono] => +593979359179
+    [notas] => test
+)
+
+Order Created: 10
+2026-05-13 21:36:20 - Request: GET
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+)
+
+2026-05-13 21:36:27 - Request: POST
+Session ID: pgb8sacbd74i4mao8d31knr6jq
+User User: Array
+(
+    [id] => 6
+    [nombre] => Joel Jiyane
+    [email] => joeljiyane@gmail.com
+    [rol] => cliente
+    [avatar] => https://lh3.googleusercontent.com/a/ACg8ocK3jZK4X8u6li5Ik7MxxWX_gZ4JZPtnOq78v3PeDKKwQP8jbK4W=s96-c
+    [tabla] => clientes
+)
+
+Cart Items: 1
+POST Data: Array
+(
+    [direccion] => Julio arellano y Reinaldo Espinoza
+    [telefono] => +593979359179
+    [notas] => guardia
+)
+
+Order Created: 11
