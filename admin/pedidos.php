@@ -115,44 +115,22 @@ if (isset($_GET['ver'])) {
 
 $flash = getFlash();
 ?>
-<!DOCTYPE html>
-<html lang="es">
+require_once __DIR__ . '/includes/header.php';
+?>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pedidos | Admin
-        <?= SITE_NAME ?>
-    </title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/layout.css">
-</head>
-
-<body>
-    <div class="admin-layout">
-        <?php require_once __DIR__ . '/includes/sidebar.php'; ?>
-
-        <div class="admin-main">
-            <div class="admin-topbar">
-                <h2>
-                    <?= isset($pedidoInfo) ? 'Pedido #' . $pedidoInfo['id'] : 'Pedidos' ?>
-                </h2>
-                <?php if (isset($pedidoInfo)): ?>
-                    <a href="<?= BASE_URL ?>admin/pedidos.php" class="btn btn-outline btn-sm"><i
-                            class="fas fa-arrow-left"></i> Volver</a>
-                <?php endif; ?>
-            </div>
-
-            <div class="admin-content">
-                <?php if ($flash): ?>
-                    <div class="alert alert-<?= $flash['type'] ?>"><i class="fas fa-info-circle"></i>
-                        <?= $flash['message'] ?>
-                    </div>
-                <?php endif; ?>
+<div class="adm-card">
+  <div class="adm-card-header">
+    <h2><i class="fas fa-shopping-bag"></i> <?= isset($pedidoInfo) ? 'Pedido #' . $pedidoInfo['id'] : 'Pedidos' ?></h2>
+    <?php if (isset($pedidoInfo)): ?>
+      <a href="<?= BASE_URL ?>admin/pedidos.php" class="btn btn-sm btn-outline"><i class="fas fa-arrow-left"></i> Volver</a>
+    <?php endif; ?>
+  </div>
+  <div class="adm-card-body">
+    <?php if ($flash): ?>
+      <div class="adm-alert <?= $flash['type'] ?>"><i class="fas fa-info-circle"></i>
+        <?= $flash['message'] ?>
+      </div>
+    <?php endif; ?>
 
                 <?php if (isset($pedidoInfo) && $detalle): ?>
                     <!-- DETALLE DEL PEDIDO -->
@@ -232,7 +210,7 @@ $flash = getFlash();
                         </div>
 
                         <!-- Items -->
-                        <table class="admin-table">
+                        <table class="adm-table">
                             <thead>
                                 <tr>
                                     <th>Producto</th>
@@ -299,7 +277,7 @@ $flash = getFlash();
                     </div>
 
                     <div style="overflow-x:auto;">
-                        <table class="admin-table">
+                        <table class="adm-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -356,9 +334,6 @@ $flash = getFlash();
                         </table>
                     </div>
                 <?php endif; ?>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+  </div>
+</div>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>

@@ -101,50 +101,25 @@ if ($action === 'edit' && isset($_GET['id'])) {
 // Listar usuarios (excluyendo clientes)
 $usuarios = $db->query("SELECT * FROM usuarios WHERE rol IN ('admin', 'staff') ORDER BY rol, nombre")->fetchAll();
 $flash = getFlash();
+require_once __DIR__ . '/includes/header.php';
 ?>
-<!DOCTYPE html>
-<html lang="es">
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Usuarios | Admin
-        <?= SITE_NAME ?>
-    </title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
-    <link rel="stylesheet" href="<?= BASE_URL ?>css/layout.css">
-</head>
-
-<body>
-    <div class="admin-layout">
-        <?php require_once __DIR__ . '/includes/sidebar.php'; ?>
-
-        <div class="admin-main">
-            <div class="admin-topbar">
-                <h2>
-                    <?= $action === 'edit' ? 'Editar Usuario' : 'Personal del Sistema' ?>
-                </h2>
-                <?php if ($action !== 'list'): ?>
-                    <a href="<?= BASE_URL ?>admin/usuarios.php" class="btn btn-outline btn-sm"><i
-                            class="fas fa-arrow-left"></i> Volver</a>
-                <?php endif; ?>
-            </div>
-
-            <div class="admin-content">
-                <?php if ($flash): ?>
-                    <div class="alert alert-<?= $flash['type'] ?>"><i class="fas fa-info-circle"></i>
-                        <?= $flash['message'] ?>
-                    </div>
-                <?php endif; ?>
-                <?php if ($error): ?>
-                    <div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i>
-                        <?= $error ?>
-                    </div>
-                <?php endif; ?>
+<div class="adm-card">
+  <div class="adm-card-header">
+    <h2><i class="fas fa-user-shield"></i> <?= $usuario ? 'Editar Administrador' : 'Gestión de Administradores' ?></h2>
+    <?php if ($usuario): ?>
+      <a href="<?= BASE_URL ?>admin/usuarios.php" class="btn btn-sm btn-outline"><i class="fas fa-arrow-left"></i> Volver</a>
+    <?php endif; ?>
+  </div>
+  <div class="adm-card-body">
+    <?php if ($error): ?>
+      <div class="adm-alert danger"><i class="fas fa-exclamation-circle"></i> <?= sanitize($error) ?></div>
+    <?php endif; ?>
+    <?php if ($flash): ?>
+      <div class="adm-alert <?= $flash['type'] ?>"><i class="fas fa-info-circle"></i>
+        <?= $flash['message'] ?>
+      </div>
+    <?php endif; ?>
 
                 <div style="display:grid;grid-template-columns: 1fr 2fr;gap:2rem;align-items:start;">
                     <!-- FORMULARIO (Siempre visible para crear/editar) -->
@@ -198,7 +173,7 @@ $flash = getFlash();
 
                     <!-- LISTADO -->
                     <div class="card" style="padding:0;">
-                        <table class="admin-table">
+                            <table class="adm-table">
                             <thead>
                                 <tr>
                                     <th>Nombre</th>
@@ -244,9 +219,6 @@ $flash = getFlash();
                         </table>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-</body>
-
-</html>
+  </div>
+</div>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
