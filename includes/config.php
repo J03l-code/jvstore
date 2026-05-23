@@ -19,7 +19,12 @@ if ($is_local) {
     define('DB_PASS', '');
 
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-    define('BASE_URL', $protocol . '://' . $host . '/JVstore/');
+    // Auto-detectar si el servidor corre directamente en el root (ej: puerto 2020) o en subcarpeta
+    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/JVstore/') !== false) {
+        define('BASE_URL', $protocol . '://' . $host . '/JVstore/');
+    } else {
+        define('BASE_URL', $protocol . '://' . $host . '/');
+    }
 
     error_reporting(E_ALL);
     ini_set('display_errors', 1);
