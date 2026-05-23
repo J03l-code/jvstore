@@ -119,53 +119,89 @@ require_once 'includes/header.php';
                 if (!empty($prod['atributos'])) {
                     $dynamicSpecs = json_decode($prod['atributos'], true) ?: [];
                 }
+
+                // Obtener mapa de iconos de la categoría
+                $catFiltroIconos = [];
+                if (!empty($prod['categoria_id'])) {
+                    $stmtCatFiltros = $db->prepare("SELECT atributos FROM categorias WHERE id = ?");
+                    $stmtCatFiltros->execute([$prod['categoria_id']]);
+                    $catFiltrosRaw = $stmtCatFiltros->fetchColumn();
+                    if ($catFiltrosRaw) {
+                        $catFiltrosArr = json_decode($catFiltrosRaw, true) ?: [];
+                        foreach ($catFiltrosArr as $cf) {
+                            if (is_array($cf)) {
+                                $catFiltroIconos[$cf['nombre']] = $cf['icono'] ?? 'fas fa-filter';
+                            }
+                        }
+                    }
+                }
                 ?>
 
                 <?php if ($prod['descripcion_tecnica'] || !empty($dynamicSpecs) || $prod['modelo'] || $prod['marca']): ?>
-                    <div class="product-specs" style="margin-top:25px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
-                        <h3 style="font-size:1.05rem; color:#1B2A4A; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                    <div class="product-specs" style="margin-top:25px; background: #f8fafc; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0;">
+                        <h3 style="font-size:1rem; color:#1B2A4A; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                             <i class="fas fa-list-ul" style="color:#ffd700;"></i> Especificaciones Detalladas
                         </h3>
-                        <table class="specs-table" style="width:100%; border-collapse:collapse;">
+
+                        <!-- Marca y Modelo primero -->
+                        <?php if ($prod['marca'] || $prod['modelo']): ?>
+                        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #e2e8f0">
                             <?php if ($prod['marca']): ?>
-                                <tr>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;">Marca</td>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($prod['marca']) ?></strong></td>
-                                </tr>
+                            <span style="background:#1B2A4A;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600">
+                                <i class="fas fa-trademark"></i> <?= sanitize($prod['marca']) ?>
+                            </span>
                             <?php endif; ?>
                             <?php if ($prod['modelo']): ?>
-                                <tr>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;">Modelo</td>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($prod['modelo']) ?></strong></td>
-                                </tr>
+                            <span style="background:#2C4A7C;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600">
+                                <i class="fas fa-tag"></i> <?= sanitize($prod['modelo']) ?>
+                            </span>
                             <?php endif; ?>
-                            
-                            <!-- Atributos Dinámicos -->
-                            <?php foreach ($dynamicSpecs as $key => $val): ?>
-                                <tr>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;"><?= sanitize($key) ?></td>
-                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($val) ?></strong></td>
-                                </tr>
-                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
 
-                            <!-- Atributos Legacy -->
+                        <!-- Atributos Dinámicos con pills multi-valor -->
+                        <?php if (!empty($dynamicSpecs)): ?>
+                        <div style="display:flex;flex-direction:column;gap:14px;margin-bottom:<?= !empty($prod['descripcion_tecnica']) ? '14px;padding-bottom:14px;border-bottom:1px solid #e2e8f0' : '0' ?>">
+                            <?php foreach ($dynamicSpecs as $key => $val): ?>
+                                <?php
+                                $filtroIcon = $catFiltroIconos[$key] ?? 'fas fa-filter';
+                                $valores = array_map('trim', explode(',', $val));
+                                ?>
+                                <div style="display:flex;align-items:flex-start;gap:10px">
+                                    <span style="min-width:110px;font-size:12px;color:#64748b;font-weight:600;display:flex;align-items:center;gap:5px;padding-top:4px">
+                                        <i class="<?= sanitize($filtroIcon) ?>" style="color:#1B2A4A;width:14px;text-align:center"></i>
+                                        <?= sanitize($key) ?>
+                                    </span>
+                                    <div style="display:flex;flex-wrap:wrap;gap:6px">
+                                        <?php foreach ($valores as $v): ?>
+                                            <?php if ($v !== ''): ?>
+                                            <span style="background:#e8edf5;color:#1B2A4A;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;border:1px solid #d1dae8">
+                                                <?= sanitize($v) ?>
+                                            </span>
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <?php endif; ?>
+
+                        <!-- Atributos Legacy (descripcion_tecnica) -->
+                        <?php if ($prod['descripcion_tecnica']): ?>
+                        <table style="width:100%;border-collapse:collapse;font-size:13px">
                             <?php
-                            if ($prod['descripcion_tecnica']) {
-                                $specs = explode('|', $prod['descripcion_tecnica']);
-                                foreach ($specs as $spec):
-                                    $parts = explode(':', $spec, 2);
-                                    if (count($parts) === 2):
-                                        ?>
-                                        <tr>
-                                            <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;"><?= sanitize(trim($parts[0])) ?></td>
-                                            <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize(trim($parts[1])) ?></strong></td>
-                                        </tr>
-                                        <?php
-                                    endif;
-                                endforeach;
-                            }
+                            $specs = explode('|', $prod['descripcion_tecnica']);
+                            foreach ($specs as $spec):
+                                $parts = explode(':', $spec, 2);
+                                if (count($parts) === 2):
                             ?>
+                            <tr>
+                                <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0;color:#64748b;width:40%"><?= sanitize(trim($parts[0])) ?></td>
+                                <td style="padding:7px 10px;border-bottom:1px solid #e2e8f0"><strong><?= sanitize(trim($parts[1])) ?></strong></td>
+                            </tr>
+                            <?php endif; endforeach; ?>
                         </table>
+                        <?php endif; ?>
                     </div>
                 <?php endif; ?>
 

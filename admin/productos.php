@@ -223,16 +223,26 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
     </div>
 
     <?php
-    // Generar mapa de atributos por categoria
+    // Generar mapa de atributos por categoria (nuevo formato: [{nombre, icono}])
     $catAttrs = [];
     $allCategories = $db->query("SELECT id, atributos FROM categorias")->fetchAll();
     foreach ($allCategories as $catItem) {
-        $catAttrs[$catItem['id']] = json_decode($catItem['atributos'] ?? '[]', true) ?: [];
+        $decoded = json_decode($catItem['atributos'] ?? '[]', true) ?: [];
+        // Normalizar: si son strings (formato viejo) convertirlos
+        $normalized = [];
+        foreach ($decoded as $item) {
+            if (is_string($item)) {
+                $normalized[] = ['nombre' => $item, 'icono' => 'fas fa-filter'];
+            } else {
+                $normalized[] = $item;
+            }
+        }
+        $catAttrs[$catItem['id']] = $normalized;
     }
     ?>
     <script>
     const categoryAttributes = <?= json_encode($catAttrs, JSON_UNESCAPED_UNICODE) ?>;
-    const activeAttributes = <?= json_encode(json_decode($editProd['atributos'] ?? '[]', true) ?: (object)[], JSON_UNESCAPED_UNICODE) ?>;
+    const activeAttributes = <?= json_encode(json_decode($editProd['atributos'] ?? '{}', true) ?: (object)[], JSON_UNESCAPED_UNICODE) ?>;
 
     function renderDynamicAttributes() {
         const select = document.querySelector('[name=categoria_id]');
@@ -252,12 +262,18 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
         
         container.style.display = 'block';
         let html = '';
-        attrs.forEach(attrName => {
+        attrs.forEach(attr => {
+            // Soporte nuevo formato {nombre, icono} y viejo formato string
+            const attrName = typeof attr === 'object' ? attr.nombre : attr;
+            const attrIcon = typeof attr === 'object' ? (attr.icono || 'fas fa-filter') : 'fas fa-filter';
             const val = activeAttributes[attrName] || '';
             html += `
               <div class="form-group">
-                <label class="form-label" style="font-size:11px;color:#475569">${attrName}</label>
-                <input type="text" name="atributos_dinamicos[${attrName}]" class="form-control" value="${val}" placeholder="Valor de ${attrName}">
+                <label class="form-label" style="font-size:12px;color:#475569;display:flex;align-items:center;gap:6px;font-weight:600">
+                  <i class="${attrIcon}" style="color:#1B2A4A;width:16px;text-align:center"></i> ${attrName}
+                </label>
+                <input type="text" name="atributos_dinamicos[${attrName}]" class="form-control" value="${val}" placeholder="Ej: L, XL, M (separa con comas para múltiples)">
+                <small style="color:#94a3b8;font-size:11px">Múltiples valores separados por coma (ej: L, XL, M)</small>
               </div>
             `;
         });

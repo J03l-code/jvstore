@@ -11,7 +11,7 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo = 1 ORDER BY nom
 
 // Cargar categoría activa para filtros dinámicos
 $categoriaActiva = null;
-$atributosFiltrables = [];
+$atributosFiltrables = []; // array de {nombre, icono}
 $valoresFiltros = [];
 
 if (!empty($_GET['categoria'])) {
@@ -20,16 +20,36 @@ if (!empty($_GET['categoria'])) {
     $categoriaActiva = $stmtCat->fetch();
     
     if ($categoriaActiva && !empty($categoriaActiva['atributos'])) {
-        $atributosFiltrables = json_decode($categoriaActiva['atributos'], true) ?: [];
-        foreach ($atributosFiltrables as $attrName) {
-            // Obtener valores únicos reales para este atributo en esta categoría
-            $sqlAttr = "SELECT DISTINCT JSON_UNQUOTE(JSON_EXTRACT(atributos, '$." . str_replace('"', '\\"', $attrName) . "')) AS val 
+        $decoded = json_decode($categoriaActiva['atributos'], true) ?: [];
+        // Normalizar: viejo formato (strings) → nuevo ({nombre, icono})
+        foreach ($decoded as $item) {
+            if (is_string($item)) {
+                $atributosFiltrables[] = ['nombre' => $item, 'icono' => 'fas fa-filter'];
+            } else {
+                $atributosFiltrables[] = $item;
+            }
+        }
+        
+        // Para cada atributo, extraer TODOS los valores únicos (incluyendo multi-valor)
+        foreach ($atributosFiltrables as $attr) {
+            $attrName = $attr['nombre'];
+            $sqlAttr = "SELECT JSON_UNQUOTE(JSON_EXTRACT(atributos, '$." . addslashes($attrName) . "')) AS val 
                         FROM productos 
                         WHERE categoria_id = ? AND activo = 1 AND atributos IS NOT NULL";
             $stmtAttr = $db->prepare($sqlAttr);
             $stmtAttr->execute([$categoriaActiva['id']]);
-            $valores = $stmtAttr->fetchAll(PDO::FETCH_COLUMN);
-            $valoresFiltros[$attrName] = array_values(array_filter($valores, fn($v) => $v !== null && $v !== ''));
+            $rawVals = $stmtAttr->fetchAll(PDO::FETCH_COLUMN);
+            // Expandir valores separados por coma
+            $uniqueVals = [];
+            foreach ($rawVals as $rv) {
+                if ($rv !== null && $rv !== '') {
+                    foreach (array_map('trim', explode(',', $rv)) as $v) {
+                        if ($v !== '') $uniqueVals[$v] = true;
+                    }
+                }
+            }
+            ksort($uniqueVals);
+            $valoresFiltros[$attrName] = array_keys($uniqueVals);
         }
     }
 }
@@ -154,11 +174,16 @@ $totalProductos = count($productos);
 
                     <!-- Filtros Dinámicos de Categoría -->
                     <?php if (!empty($atributosFiltrables)): ?>
-                        <?php foreach ($atributosFiltrables as $attrName): ?>
+                        <?php foreach ($atributosFiltrables as $attr): ?>
+                            <?php 
+                            $attrName = is_array($attr) ? $attr['nombre'] : $attr;
+                            $attrIcon = is_array($attr) ? ($attr['icono'] ?? 'fas fa-filter') : 'fas fa-filter';
+                            ?>
                             <?php if (!empty($valoresFiltros[$attrName])): ?>
-                                <div class="filter-section" style="background: rgba(27, 42, 74, 0.03); padding: 12px; border-radius: 8px; border-left: 3px solid #ffd700;">
-                                    <h4 style="color: #1B2A4A; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                        <i class="fas fa-sliders-h" style="color: #ffd700;"></i> <?= sanitize($attrName) ?>
+                                <div class="filter-section" style="background: rgba(27, 42, 74, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid #ffd700;">
+                                    <h4 style="color: #1B2A4A; font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="<?= sanitize($attrIcon) ?>" style="color: #ffd700; width:16px; text-align:center;"></i>
+                                        <?= sanitize($attrName) ?>
                                     </h4>
                                     <select name="filtro[<?= sanitize($attrName) ?>]" onchange="this.form.submit()" style="border: 1px solid rgba(27, 42, 74, 0.15);">
                                         <option value="">Todos/as</option>

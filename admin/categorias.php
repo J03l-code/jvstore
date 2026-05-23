@@ -32,12 +32,20 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $nombre = trim($_POST['nombre'] ?? '');
     if(!$nombre){ setFlash('danger','Nombre requerido'); redirect(BASE_URL.'admin/categorias.php'); }
     
-    $rawAtributos = trim($_POST['atributos'] ?? '');
-    $atributosJson = null;
-    if ($rawAtributos !== '') {
-        $arr = array_filter(array_map('trim', explode(',', $rawAtributos)));
-        $atributosJson = json_encode(array_values($arr), JSON_UNESCAPED_UNICODE);
+    // Procesar filtros con nombre + icono (nuevo formato JSON de objetos)
+    $filtroNombres = $_POST['filtro_nombre'] ?? [];
+    $filtroIconos  = $_POST['filtro_icono']  ?? [];
+    $atributosArr  = [];
+    foreach ($filtroNombres as $i => $fn) {
+        $fn = trim($fn);
+        if ($fn !== '') {
+            $atributosArr[] = [
+                'nombre' => $fn,
+                'icono'  => trim($filtroIconos[$i] ?? 'fas fa-filter'),
+            ];
+        }
     }
+    $atributosJson = !empty($atributosArr) ? json_encode($atributosArr, JSON_UNESCAPED_UNICODE) : null;
 
     $data = [
       'nombre'      => $nombre,
@@ -143,24 +151,78 @@ $categorias = $db->query("
         <textarea name="descripcion" class="form-control" rows="3"><?= sanitize($editCat['descripcion']??'') ?></textarea>
       </div>
       <div class="form-group full" style="border-top:1px solid #f1f5f9;padding-top:15px;margin-top:10px">
-        <label class="form-label" style="color:var(--navy);font-weight:700">Filtros de Búsqueda (Atributos de Categoría)</label>
-        <?php
-        $atributosVal = '';
-        if (!empty($editCat['atributos'])) {
-            $arr = json_decode($editCat['atributos'], true);
-            if (is_array($arr)) {
-                $atributosVal = implode(', ', $arr);
-            } else {
-                $atributosVal = $editCat['atributos'];
-            }
-        }
-        ?>
-        <input type="text" name="atributos" class="form-control" value="<?= sanitize($atributosVal) ?>" placeholder="Ej: Marca, Memoria RAM, Almacenamiento, Talla, Color, Material">
-        <small style="color:#64748b;font-size:12px;margin-top:4px;display:block">
-          Escribe los atributos específicos para esta categoría separados por comas. Ejemplo para calzado: <strong>Marca, Talla, Color, Tipo de Suela</strong>.
+        <label class="form-label" style="color:var(--navy);font-weight:700;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between">
+          <span><i class="fas fa-sliders-h"></i> Filtros de Búsqueda de la Categoría</span>
+          <button type="button" onclick="addFilterRow()" class="btn btn-sm btn-gold" style="font-size:12px">
+            <i class="fas fa-plus"></i> Agregar Filtro
+          </button>
+        </label>
+        <div id="filtros-container" style="display:flex;flex-direction:column;gap:10px">
+          <?php
+          $filtrosExistentes = [];
+          if (!empty($editCat['atributos'])) {
+              $decoded = json_decode($editCat['atributos'], true);
+              if (is_array($decoded)) {
+                  // Nuevo formato: array de objetos {nombre, icono}
+                  if (isset($decoded[0]) && is_array($decoded[0])) {
+                      $filtrosExistentes = $decoded;
+                  } else {
+                      // Formato viejo: array de strings → convertir al nuevo
+                      foreach ($decoded as $s) {
+                          $filtrosExistentes[] = ['nombre' => $s, 'icono' => 'fas fa-filter'];
+                      }
+                  }
+              }
+          }
+          if (empty($filtrosExistentes)) {
+              $filtrosExistentes = [['nombre' => '', 'icono' => 'fas fa-filter']];
+          }
+          foreach ($filtrosExistentes as $fi => $frow): ?>
+          <div class="filtro-row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0">
+            <div style="display:flex;align-items:center;gap:10px">
+              <i class="<?= sanitize($frow['icono']) ?> filtro-icon-preview" style="color:#1B2A4A;font-size:18px;width:24px;text-align:center"></i>
+              <input type="text" name="filtro_nombre[]" class="form-control" value="<?= sanitize($frow['nombre']) ?>" placeholder="Nombre del filtro (ej: Talla, Color, Olor)" style="flex:1">
+            </div>
+            <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="<?= sanitize($frow['icono']) ?>" placeholder="fas fa-tshirt" style="width:160px;font-size:12px" oninput="updateIconPreview(this)">
+            <button type="button" onclick="this.closest('.filtro-row').remove()" class="btn btn-sm btn-danger" title="Eliminar">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        <small style="color:#64748b;font-size:12px;margin-top:8px;display:block">
+          Cada filtro tiene un <strong>nombre</strong> (ej: Talla, Olor, Color) y un <strong>ícono FontAwesome</strong> (ej: fas fa-tshirt, fas fa-flask, fas fa-palette).<br>
+          Al editar los productos de esta categoría, podrás asignar múltiples valores a cada filtro separados por coma (ej: L, XL, M).
         </small>
       </div>
     </div>
+    <script>
+    function addFilterRow() {
+        const container = document.getElementById('filtros-container');
+        const div = document.createElement('div');
+        div.className = 'filtro-row';
+        div.style.cssText = 'display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0';
+        div.innerHTML = `
+          <div style="display:flex;align-items:center;gap:10px">
+            <i class="fas fa-filter filtro-icon-preview" style="color:#1B2A4A;font-size:18px;width:24px;text-align:center"></i>
+            <input type="text" name="filtro_nombre[]" class="form-control" value="" placeholder="Nombre del filtro (ej: Talla, Color, Olor)" style="flex:1">
+          </div>
+          <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="fas fa-filter" placeholder="fas fa-tshirt" style="width:160px;font-size:12px" oninput="updateIconPreview(this)">
+          <button type="button" onclick="this.closest('.filtro-row').remove()" class="btn btn-sm btn-danger" title="Eliminar">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        container.appendChild(div);
+    }
+    function updateIconPreview(input) {
+        const row = input.closest('.filtro-row');
+        const preview = row.querySelector('.filtro-icon-preview');
+        if (preview) {
+            preview.className = input.value.trim() + ' filtro-icon-preview';
+            preview.style.cssText = 'color:#1B2A4A;font-size:18px;width:24px;text-align:center';
+        }
+    }
+    </script>
     <div style="display:flex;gap:12px;margin-top:20px">
       <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> Guardar</button>
       <a href="<?= BASE_URL ?>admin/categorias.php" class="btn btn-outline">Cancelar</a>
