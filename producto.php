@@ -52,25 +52,53 @@ require_once 'includes/header.php';
     <div class="container">
         <div class="product-detail">
             <div class="product-gallery">
-                <div class="main-image-container">
-                    <img src="<?= getProductImage($prod['imagen_url']) ?>" alt="<?= sanitize($prod['nombre']) ?>"
-                        id="mainImage" class="img-fluid">
+                <div class="main-image-container" style="position:relative; width:100%; aspect-ratio:1; display:flex; align-items:center; justify-content:center; background:#fff; overflow:hidden; border-radius:12px; border:1px solid #e2e8f0;">
+                    <img src="<?= getProductImage($prod['imagen_url']) ?>" alt="<?= sanitize($prod['nombre']) ?>" id="mainImage" class="img-fluid" style="max-height:100%; object-fit:contain; transition: opacity 0.15s ease;">
+                    <div id="mainVideoContainer" style="display:none; width:100%; height:100%; background:#000; align-items:center; justify-content:center;"></div>
                 </div>
-                <?php if ($prod['imagen_2'] || $prod['imagen_3']): ?>
-                    <div class="thumbnails">
-                        <div class="thumb active"
-                            onclick="changeImage(this, '<?= getProductImage($prod['imagen_url']) ?>')">
-                            <img src="<?= getProductImage($prod['imagen_url']) ?>" alt="Vista 1">
+                
+                <?php
+                $galItems = [];
+                if (!empty($prod['galeria'])) {
+                    $galItems = json_decode($prod['galeria'], true) ?: [];
+                }
+                ?>
+                <?php if (!empty($galItems) || $prod['imagen_2'] || $prod['imagen_3']): ?>
+                    <div class="thumbnails" style="display:flex; gap:10px; margin-top:15px; overflow-x:auto; padding-bottom:5px;">
+                        <!-- Miniatura Principal -->
+                        <div class="thumb active" onclick="showMedia('image', '<?= getProductImage($prod['imagen_url']) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid #1B2A4A; overflow:hidden; cursor:pointer; flex-shrink:0;">
+                            <img src="<?= getProductImage($prod['imagen_url']) ?>" style="width:100%; height:100%; object-fit:cover;">
                         </div>
-                        <?php if ($prod['imagen_2']): ?>
-                            <div class="thumb" onclick="changeImage(this, '<?= getProductImage($prod['imagen_2']) ?>')">
-                                <img src="<?= getProductImage($prod['imagen_2']) ?>" alt="Vista 2">
+                        
+                        <!-- Miniaturas Galería JSON -->
+                        <?php foreach ($galItems as $index => $item):
+                            $isVid = ($item['tipo'] ?? 'imagen') === 'video';
+                            $itemUrl = $item['url'];
+                            $fullUrl = (strpos($itemUrl, 'http') === 0) ? $itemUrl : BASE_URL . $itemUrl;
+                        ?>
+                            <div class="thumb" onclick="showMedia('<?= $isVid ? 'video' : 'image' ?>', '<?= sanitize($fullUrl) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid transparent; overflow:hidden; cursor:pointer; flex-shrink:0; position:relative; background:#f1f5f9;">
+                                <?php if ($isVid): ?>
+                                    <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff;">
+                                        <i class="fas fa-play-circle" style="font-size:24px; color:#ffd700;"></i>
+                                    </div>
+                                <?php else: ?>
+                                    <img src="<?= sanitize($fullUrl) ?>" style="width:100%; height:100%; object-fit:cover;">
+                                <?php endif; ?>
                             </div>
-                        <?php endif; ?>
-                        <?php if ($prod['imagen_3']): ?>
-                            <div class="thumb" onclick="changeImage(this, '<?= getProductImage($prod['imagen_3']) ?>')">
-                                <img src="<?= getProductImage($prod['imagen_3']) ?>" alt="Vista 3">
-                            </div>
+                        <?php endforeach; ?>
+                        
+                        <!-- Legacy Fallback -->
+                        <?php if (empty($galItems)): ?>
+                            <?php if ($prod['imagen_2']): ?>
+                                <div class="thumb" onclick="showMedia('image', '<?= getProductImage($prod['imagen_2']) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid transparent; overflow:hidden; cursor:pointer; flex-shrink:0;">
+                                    <img src="<?= getProductImage($prod['imagen_2']) ?>" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                            <?php endif; ?>
+                            <?php if ($prod['imagen_3']): ?>
+                                <div class="thumb" onclick="showMedia('image', '<?= getProductImage($prod['imagen_3']) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid transparent; overflow:hidden; cursor:pointer; flex-shrink:0;">
+                                    <img src="<?= getProductImage($prod['imagen_3']) ?>" style="width:100%; height:100%; object-fit:cover;">
+                                </div>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </div>
                 <?php endif; ?>
@@ -137,25 +165,18 @@ require_once 'includes/header.php';
                 }
                 ?>
 
-                <?php if ($prod['descripcion_tecnica'] || !empty($dynamicSpecs) || $prod['modelo'] || $prod['marca']): ?>
+                <?php if ($prod['descripcion_tecnica'] || !empty($dynamicSpecs) || $prod['marca']): ?>
                     <div class="product-specs" style="margin-top:25px; background: #f8fafc; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0;">
                         <h3 style="font-size:1rem; color:#1B2A4A; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
                             <i class="fas fa-list-ul" style="color:#ffd700;"></i> Especificaciones Detalladas
                         </h3>
 
-                        <!-- Marca y Modelo primero -->
-                        <?php if ($prod['marca'] || $prod['modelo']): ?>
+                        <!-- Marca primero -->
+                        <?php if ($prod['marca']): ?>
                         <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid #e2e8f0">
-                            <?php if ($prod['marca']): ?>
                             <span style="background:#1B2A4A;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600">
                                 <i class="fas fa-trademark"></i> <?= sanitize($prod['marca']) ?>
                             </span>
-                            <?php endif; ?>
-                            <?php if ($prod['modelo']): ?>
-                            <span style="background:#2C4A7C;color:#fff;padding:5px 12px;border-radius:20px;font-size:12px;font-weight:600">
-                                <i class="fas fa-tag"></i> <?= sanitize($prod['modelo']) ?>
-                            </span>
-                            <?php endif; ?>
                         </div>
                         <?php endif; ?>
 
@@ -275,16 +296,50 @@ require_once 'includes/header.php';
 </section>
 
 <script>
-    function changeImage(el, src) {
-        const main = document.getElementById('mainImage');
-        main.style.opacity = '0.5';
-        setTimeout(() => {
-            main.src = src;
-            main.onload = () => main.style.opacity = '1';
-        }, 150);
-
-        document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
+    function showMedia(type, url, el) {
+        // Quitar clase activa de todas las miniaturas
+        document.querySelectorAll('.thumbnails .thumb').forEach(t => {
+            t.classList.remove('active');
+            t.style.borderColor = 'transparent';
+        });
         el.classList.add('active');
+        el.style.borderColor = '#1B2A4A';
+        
+        const mainImg = document.getElementById('mainImage');
+        const mainVidCont = document.getElementById('mainVideoContainer');
+        
+        if (type === 'video') {
+            mainImg.style.display = 'none';
+            mainVidCont.style.display = 'flex';
+            
+            // Determinar si es un link de YouTube
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('youtube.com/watch')) {
+                    const urlParams = new URLSearchParams(new URL(url).search);
+                    videoId = urlParams.get('v');
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('/').pop();
+                }
+                mainVidCont.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            } else {
+                // Video local
+                mainVidCont.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
+            }
+        } else {
+            mainVidCont.style.display = 'none';
+            mainVidCont.innerHTML = '';
+            mainImg.style.display = 'block';
+            mainImg.style.opacity = '0.5';
+            setTimeout(() => {
+                mainImg.src = url;
+                mainImg.onload = () => mainImg.style.opacity = '1';
+            }, 150);
+        }
+    }
+
+    function changeImage(el, src) {
+        showMedia('image', src, el);
     }
 
     function changeQty(delta) {
@@ -303,6 +358,7 @@ require_once 'includes/header.php';
 
         if (container && img) {
             container.addEventListener('mousemove', function (e) {
+                if (img.style.display === 'none') return; // No zoom if video is shown
                 const { left, top, width, height } = container.getBoundingClientRect();
                 const x = ((e.clientX - left) / width) * 100;
                 const y = ((e.clientY - top) / height) * 100;
@@ -310,7 +366,6 @@ require_once 'includes/header.php';
                 img.style.transformOrigin = `${x}% ${y}%`;
             });
 
-            // Resetear al salir (opcional, para suavidad)
             container.addEventListener('mouseleave', function () {
                 setTimeout(() => {
                     img.style.transformOrigin = 'center center';

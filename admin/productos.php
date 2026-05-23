@@ -7,6 +7,16 @@ require_once __DIR__ . '/includes/header.php';
 
 $db = getDB();
 
+// Auto-migración silenciosa de la columna galeria
+try {
+  $q_gal = $db->query("SHOW COLUMNS FROM productos LIKE 'galeria'");
+  if (!$q_gal->fetch()) {
+      $db->exec("ALTER TABLE productos ADD COLUMN galeria TEXT DEFAULT NULL");
+  }
+} catch (Exception $e) {
+  error_log("Error auto-migración galeria: " . $e->getMessage());
+}
+
 // ── ACCIONES POST ──────────────────────────────────────────
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
   $action = $_POST['action'] ?? '';
@@ -23,6 +33,29 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     return null;
   }
 
+  // Subir archivos de galería (imágenes y videos)
+  function uploadGalleryItems($files){
+    $items = [];
+    if(!isset($files['name']) || !is_array($files['name'])) return $items;
+    $dir = __DIR__ . '/../uploads/productos/';
+    if(!is_dir($dir)) mkdir($dir, 0755, true);
+    foreach($files['name'] as $i => $name){
+      if($files['error'][$i] !== UPLOAD_ERR_OK) continue;
+      $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+      $isImg = in_array($ext,['jpg','jpeg','png','gif','webp']);
+      $isVid = in_array($ext,['mp4','webm','ogg','mov','avi']);
+      if(!$isImg && !$isVid) continue;
+      $newName = uniqid('gal_').'.'.$ext;
+      if(move_uploaded_file($files['tmp_name'][$i], $dir.$newName)){
+        $items[] = [
+          'tipo' => $isVid ? 'video' : 'imagen',
+          'url' => 'uploads/productos/'.$newName
+        ];
+      }
+    }
+    return $items;
+  }
+
   if($action === 'save'){
     $id      = (int)($_POST['id'] ?? 0);
     
@@ -30,11 +63,53 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $atributosDinamicos = $_POST['atributos_dinamicos'] ?? [];
     $atributosJson = null;
     if (is_array($atributosDinamicos) && !empty($atributosDinamicos)) {
-        $filtered = array_filter(array_map('trim', $atributosDinamicos), fn($v) => $v !== '');
-        if (!empty($filtered)) {
-            $atributosJson = json_encode($filtered, JSON_UNESCAPED_UNICODE);
+        $processed = [];
+        foreach ($atributosDinamicos as $key => $val) {
+            if (is_array($val)) {
+                $filteredVal = array_filter(array_map('trim', $val), fn($v) => $v !== '');
+                if (!empty($filteredVal)) {
+                    $processed[$key] = implode(', ', $filteredVal);
+                }
+            } else {
+                $t = trim($val);
+                if ($t !== '') {
+                    $processed[$key] = $t;
+                }
+            }
+        }
+        if (!empty($processed)) {
+            $atributosJson = json_encode($processed, JSON_UNESCAPED_UNICODE);
         }
     }
+
+    // Procesar galería de fotos y videos
+    $galeriaItems = [];
+    $existentesUrls = $_POST['galeria_existente_url'] ?? [];
+    $existentesTipos = $_POST['galeria_existente_tipo'] ?? [];
+    foreach ($existentesUrls as $idx => $url) {
+        $url = trim($url);
+        if ($url !== '') {
+            $galeriaItems[] = [
+                'tipo' => $existentesTipos[$idx] ?? 'imagen',
+                'url'  => $url
+            ];
+        }
+    }
+    if (!empty($_FILES['galeria_archivos'])) {
+        $nuevosSubidos = uploadGalleryItems($_FILES['galeria_archivos']);
+        $galeriaItems = array_merge($galeriaItems, $nuevosSubidos);
+    }
+    $videosExternos = $_POST['galeria_videos_externos'] ?? [];
+    foreach ($videosExternos as $vidUrl) {
+        $vidUrl = trim($vidUrl);
+        if ($vidUrl !== '') {
+            $galeriaItems[] = [
+                'tipo' => 'video',
+                'url'  => $vidUrl
+            ];
+        }
+    }
+    $galeriaJson = !empty($galeriaItems) ? json_encode($galeriaItems, JSON_UNESCAPED_UNICODE) : null;
 
     $data = [
       'categoria_id'      => ($_POST['categoria_id'] ?: null),
@@ -52,6 +127,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'nuevo'             => isset($_POST['nuevo']) ? 1 : 0,
       'activo'            => isset($_POST['activo']) ? 1 : 0,
       'atributos'         => $atributosJson,
+      'galeria'           => $galeriaJson,
     ];
     if(!$data['nombre']){ setFlash('danger','El nombre es obligatorio'); redirect(BASE_URL.'admin/productos.php'); }
 
@@ -174,19 +250,7 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
         <input type="text" name="marca" class="form-control" value="<?= sanitize($editProd['marca']??'') ?>">
       </div>
       <div class="form-group">
-        <label class="form-label">Modelo Compatible</label>
-        <input type="text" name="modelo" class="form-control" value="<?= sanitize($editProd['modelo']??'') ?>">
-      </div>
-      <div class="form-group full">
-        <label class="form-label">Descripción Corta</label>
-        <input type="text" name="descripcion_corta" class="form-control" value="<?= sanitize($editProd['descripcion_corta']??'') ?>" maxlength="300" placeholder="Resumen en 1-2 líneas">
-      </div>
-      <div class="form-group full">
-        <label class="form-label">Descripción Completa</label>
-        <textarea name="descripcion" class="form-control" rows="4"><?= sanitize($editProd['descripcion']??'') ?></textarea>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Imagen del Producto</label>
+        <label class="form-label">Imagen Principal del Producto</label>
         <input type="file" name="imagen" class="form-control" accept="image/*" onchange="previewImage(this,'prevImg')">
         <?php if($editProd && $editProd['imagen_url']): ?>
         <img src="<?= getProductImage($editProd['imagen_url']) ?>" class="img-preview show" id="prevImg" style="max-height:120px">
@@ -194,6 +258,69 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
         <img id="prevImg" class="img-preview">
         <?php endif; ?>
       </div>
+      <div class="form-group full" style="border-top:1px solid #f1f5f9;padding-top:15px;margin-top:15px">
+        <label class="form-label" style="color:var(--navy);font-weight:700;margin-bottom:12px"><i class="fas fa-images"></i> Galería de Imágenes y Videos Adicionales</label>
+        
+        <!-- Grid de Items Existentes -->
+        <div id="galeria-preview-grid" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:15px">
+          <?php
+          $galItems = [];
+          if ($editProd && !empty($editProd['galeria'])) {
+              $galItems = json_decode($editProd['galeria'], true) ?: [];
+          }
+          foreach ($galItems as $gi => $item):
+              $isVid = ($item['tipo'] ?? 'imagen') === 'video';
+              $thumbUrl = $item['url'];
+              $displayUrl = (strpos($thumbUrl, 'http') === 0) ? $thumbUrl : BASE_URL . $thumbUrl;
+          ?>
+          <div class="galeria-item-card" style="position:relative;width:100px;height:100px;border-radius:8px;border:1px solid #cbd5e1;overflow:hidden;background:#f1f5f9">
+            <input type="hidden" name="galeria_existente_url[]" value="<?= sanitize($item['url']) ?>">
+            <input type="hidden" name="galeria_existente_tipo[]" value="<?= sanitize($item['tipo'] ?? 'imagen') ?>">
+            
+            <?php if ($isVid): ?>
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff">
+                <i class="fas fa-video" style="font-size:24px;color:#ffd700"></i>
+              </div>
+            <?php else: ?>
+              <img src="<?= sanitize($displayUrl) ?>" style="width:100%;height:100%;object-fit:cover">
+            <?php endif; ?>
+            
+            <button type="button" onclick="this.closest('.galeria-item-card').remove()" style="position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,0.9);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px" title="Eliminar de la galería">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+          <div>
+            <label class="form-label" style="font-size:12px;color:#64748b">Subir fotos o videos locales (Múltiples)</label>
+            <input type="file" name="galeria_archivos[]" class="form-control" accept="image/*,video/*" multiple>
+            <small style="color:#94a3b8;font-size:11px">Formatos: JPG, PNG, WEBP, MP4, WEBM</small>
+          </div>
+          <div>
+            <label class="form-label" style="font-size:12px;color:#64748b;display:flex;justify-content:space-between;align-items:center">
+              <span>Enlaces de Video Externos (ej: YouTube)</span>
+              <button type="button" onclick="addExternalVideoRow()" class="btn btn-sm btn-gold" style="padding:2px 8px;font-size:10px"><i class="fas fa-plus"></i></button>
+            </label>
+            <div id="videos-externos-container" style="display:flex;flex-direction:column;gap:6px">
+              <input type="text" name="galeria_videos_externos[]" class="form-control" placeholder="https://www.youtube.com/watch?v=..." style="font-size:12px">
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+      function addExternalVideoRow() {
+          const container = document.getElementById('videos-externos-container');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.name = 'galeria_videos_externos[]';
+          input.className = 'form-control';
+          input.placeholder = 'https://www.youtube.com/watch?v=...';
+          input.style.cssText = 'font-size:12px;margin-top:4px';
+          container.appendChild(input);
+      }
+      </script>
       <div class="form-group">
         <label class="form-label">Opciones</label>
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
@@ -263,17 +390,37 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
         container.style.display = 'block';
         let html = '';
         attrs.forEach(attr => {
-            // Soporte nuevo formato {nombre, icono} y viejo formato string
             const attrName = typeof attr === 'object' ? attr.nombre : attr;
             const attrIcon = typeof attr === 'object' ? (attr.icono || 'fas fa-filter') : 'fas fa-filter';
+            const attrOpciones = typeof attr === 'object' ? (attr.opciones || '') : '';
+            
             const val = activeAttributes[attrName] || '';
+            const activeVals = val.split(',').map(s => s.trim()).filter(s => s !== '');
+
+            let htmlField = '';
+            if (attrOpciones.trim() !== '') {
+                const opcionesArr = attrOpciones.split(',').map(s => s.trim()).filter(s => s !== '');
+                htmlField += `<div style="display:flex;flex-wrap:wrap;gap:12px;background:#fff;padding:8px 12px;border-radius:8px;border:1px solid #cbd5e1;margin-top:6px;width:100%">`;
+                opcionesArr.forEach(opt => {
+                    const isChecked = activeVals.includes(opt) ? 'checked' : '';
+                    htmlField += `
+                      <label style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:#334155;cursor:pointer;margin:4px 0">
+                        <input type="checkbox" name="atributos_dinamicos[${attrName}][]" value="${opt}" ${isChecked} style="width:16px;height:16px;accent-color:#1B2A4A">
+                        <span>${opt}</span>
+                      </label>
+                    `;
+                });
+                htmlField += `</div>`;
+            } else {
+                htmlField += `<input type="text" name="atributos_dinamicos[${attrName}]" class="form-control" value="${val}" placeholder="Ej: L, XL, M (separa con comas)">`;
+            }
+
             html += `
-              <div class="form-group">
-                <label class="form-label" style="font-size:12px;color:#475569;display:flex;align-items:center;gap:6px;font-weight:600">
+              <div class="form-group full">
+                <label class="form-label" style="font-size:12px;color:#475569;display:flex;align-items:center;gap:6px;font-weight:600;margin-bottom:2px">
                   <i class="${attrIcon}" style="color:#1B2A4A;width:16px;text-align:center"></i> ${attrName}
                 </label>
-                <input type="text" name="atributos_dinamicos[${attrName}]" class="form-control" value="${val}" placeholder="Ej: L, XL, M (separa con comas para múltiples)">
-                <small style="color:#94a3b8;font-size:11px">Múltiples valores separados por coma (ej: L, XL, M)</small>
+                ${htmlField}
               </div>
             `;
         });

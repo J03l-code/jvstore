@@ -32,20 +32,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $nombre = trim($_POST['nombre'] ?? '');
     if(!$nombre){ setFlash('danger','Nombre requerido'); redirect(BASE_URL.'admin/categorias.php'); }
     
-    // Procesar filtros con nombre + icono (nuevo formato JSON de objetos)
-    $filtroNombres = $_POST['filtro_nombre'] ?? [];
-    $filtroIconos  = $_POST['filtro_icono']  ?? [];
-    $atributosArr  = [];
+    // Procesar filtros con nombre + icono + opciones
+    $filtroNombres  = $_POST['filtro_nombre'] ?? [];
+    $filtroIconos   = $_POST['filtro_icono']  ?? [];
+    $filtroOpciones = $_POST['filtro_opciones'] ?? [];
+    $atributosArr   = [];
     foreach ($filtroNombres as $i => $fn) {
         $fn = trim($fn);
         if ($fn !== '') {
             $atributosArr[] = [
-                'nombre' => $fn,
-                'icono'  => trim($filtroIconos[$i] ?? 'fas fa-filter'),
+                'nombre'   => $fn,
+                'icono'    => trim($filtroIconos[$i] ?? 'fas fa-filter'),
+                'opciones' => trim($filtroOpciones[$i] ?? ''),
             ];
         }
     }
     $atributosJson = !empty($atributosArr) ? json_encode($atributosArr, JSON_UNESCAPED_UNICODE) : null;
+
 
     $data = [
       'nombre'      => $nombre,
@@ -163,27 +166,28 @@ $categorias = $db->query("
           if (!empty($editCat['atributos'])) {
               $decoded = json_decode($editCat['atributos'], true);
               if (is_array($decoded)) {
-                  // Nuevo formato: array de objetos {nombre, icono}
+                  // Nuevo formato: array de objetos {nombre, icono, opciones}
                   if (isset($decoded[0]) && is_array($decoded[0])) {
                       $filtrosExistentes = $decoded;
                   } else {
                       // Formato viejo: array de strings → convertir al nuevo
                       foreach ($decoded as $s) {
-                          $filtrosExistentes[] = ['nombre' => $s, 'icono' => 'fas fa-filter'];
+                          $filtrosExistentes[] = ['nombre' => $s, 'icono' => 'fas fa-filter', 'opciones' => ''];
                       }
                   }
               }
           }
           if (empty($filtrosExistentes)) {
-              $filtrosExistentes = [['nombre' => '', 'icono' => 'fas fa-filter']];
+              $filtrosExistentes = [['nombre' => '', 'icono' => 'fas fa-filter', 'opciones' => '']];
           }
           foreach ($filtrosExistentes as $fi => $frow): ?>
-          <div class="filtro-row" style="display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0">
+          <div class="filtro-row" style="display:grid;grid-template-columns:1.5fr 1.2fr 2fr auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0">
             <div style="display:flex;align-items:center;gap:10px">
-              <i class="<?= sanitize($frow['icono']) ?> filtro-icon-preview" style="color:#1B2A4A;font-size:18px;width:24px;text-align:center"></i>
-              <input type="text" name="filtro_nombre[]" class="form-control" value="<?= sanitize($frow['nombre']) ?>" placeholder="Nombre del filtro (ej: Talla, Color, Olor)" style="flex:1">
+              <i class="<?= sanitize($frow['icono'] ?? 'fas fa-filter') ?> filtro-icon-preview" style="color:#1B2A4A;font-size:18px;width:24px;text-align:center"></i>
+              <input type="text" name="filtro_nombre[]" class="form-control" value="<?= sanitize($frow['nombre'] ?? '') ?>" placeholder="Filtro (ej: Talla)" style="flex:1" required>
             </div>
-            <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="<?= sanitize($frow['icono']) ?>" placeholder="fas fa-tshirt" style="width:160px;font-size:12px" oninput="updateIconPreview(this)">
+            <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="<?= sanitize($frow['icono'] ?? 'fas fa-filter') ?>" placeholder="Icono (fas fa-ruler)" style="font-size:12px" oninput="updateIconPreview(this)">
+            <input type="text" name="filtro_opciones[]" class="form-control" value="<?= sanitize($frow['opciones'] ?? '') ?>" placeholder="Valores separados por coma (ej: S, M, L, XL)" style="font-size:12px">
             <button type="button" onclick="this.closest('.filtro-row').remove()" class="btn btn-sm btn-danger" title="Eliminar">
               <i class="fas fa-trash"></i>
             </button>
@@ -191,8 +195,8 @@ $categorias = $db->query("
           <?php endforeach; ?>
         </div>
         <small style="color:#64748b;font-size:12px;margin-top:8px;display:block">
-          Cada filtro tiene un <strong>nombre</strong> (ej: Talla, Olor, Color) y un <strong>ícono FontAwesome</strong> (ej: fas fa-tshirt, fas fa-flask, fas fa-palette).<br>
-          Al editar los productos de esta categoría, podrás asignar múltiples valores a cada filtro separados por coma (ej: L, XL, M).
+          Cada filtro tiene un <strong>nombre</strong> (ej: Talla), un <strong>ícono FontAwesome</strong> (ej: fas fa-ruler), y <strong>valores predefinidos</strong> separados por comas (ej: S, M, L).<br>
+          En el formulario del producto podrás marcar con casillas de verificación (checkboxes) los valores que correspondan.
         </small>
       </div>
     </div>
@@ -201,13 +205,14 @@ $categorias = $db->query("
         const container = document.getElementById('filtros-container');
         const div = document.createElement('div');
         div.className = 'filtro-row';
-        div.style.cssText = 'display:grid;grid-template-columns:1fr auto auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0';
+        div.style.cssText = 'display:grid;grid-template-columns:1.5fr 1.2fr 2fr auto;gap:8px;align-items:center;background:#f8fafc;padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0';
         div.innerHTML = `
           <div style="display:flex;align-items:center;gap:10px">
             <i class="fas fa-filter filtro-icon-preview" style="color:#1B2A4A;font-size:18px;width:24px;text-align:center"></i>
-            <input type="text" name="filtro_nombre[]" class="form-control" value="" placeholder="Nombre del filtro (ej: Talla, Color, Olor)" style="flex:1">
+            <input type="text" name="filtro_nombre[]" class="form-control" value="" placeholder="Filtro (ej: Talla)" style="flex:1" required>
           </div>
-          <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="fas fa-filter" placeholder="fas fa-tshirt" style="width:160px;font-size:12px" oninput="updateIconPreview(this)">
+          <input type="text" name="filtro_icono[]" class="form-control filtro-icono-input" value="fas fa-filter" placeholder="Icono (fas fa-ruler)" style="font-size:12px" oninput="updateIconPreview(this)">
+          <input type="text" name="filtro_opciones[]" class="form-control" value="" placeholder="Valores separados por coma (ej: S, M, L, XL)" style="font-size:12px">
           <button type="button" onclick="this.closest('.filtro-row').remove()" class="btn btn-sm btn-danger" title="Eliminar">
             <i class="fas fa-trash"></i>
           </button>

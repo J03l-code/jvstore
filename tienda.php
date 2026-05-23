@@ -54,18 +54,16 @@ if (!empty($_GET['categoria'])) {
     }
 }
 
-// Obtener marcas y modelos únicos
+// Obtener marcas únicas
 $marcas = $db->query("SELECT DISTINCT marca FROM productos WHERE activo = 1 AND marca IS NOT NULL ORDER BY marca")->fetchAll(PDO::FETCH_COLUMN);
-$modelos = $db->query("SELECT DISTINCT modelo FROM productos WHERE activo = 1 AND modelo IS NOT NULL ORDER BY modelo")->fetchAll(PDO::FETCH_COLUMN);
 
 // Construir consulta con filtros
 $where = ["p.activo = 1"];
 $params = [];
 
 if (!empty($_GET['buscar'])) {
-    $where[] = "(p.nombre LIKE ? OR p.sku LIKE ? OR p.descripcion LIKE ? OR p.marca LIKE ? OR p.modelo LIKE ?)";
+    $where[] = "(p.nombre LIKE ? OR p.sku LIKE ? OR p.descripcion LIKE ? OR p.marca LIKE ?)";
     $searchTerm = '%' . $_GET['buscar'] . '%';
-    $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
@@ -78,10 +76,6 @@ if (!empty($_GET['categoria'])) {
 if (!empty($_GET['marca'])) {
     $where[] = "p.marca = ?";
     $params[] = $_GET['marca'];
-}
-if (!empty($_GET['modelo'])) {
-    $where[] = "p.modelo = ?";
-    $params[] = $_GET['modelo'];
 }
 if (!empty($_GET['precio_min'])) {
     $where[] = "COALESCE(p.precio_oferta, p.precio) >= ?";
@@ -208,17 +202,7 @@ $totalProductos = count($productos);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="filter-section">
-                        <h4><i class="fas fa-folder"></i> Modelo</h4>
-                        <select name="modelo" onchange="this.form.submit()">
-                            <option value="">Todos los modelos</option>
-                            <?php foreach ($modelos as $modelo): ?>
-                                <option value="<?= $modelo ?>" <?= ($_GET['modelo'] ?? '') === $modelo ? 'selected' : '' ?>>
-                                    <?= sanitize($modelo) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
+
                     <div class="filter-section">
                         <h4><i class="fas fa-dollar-sign"></i> Rango de Precio</h4>
                         <div class="price-range">
