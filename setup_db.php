@@ -134,6 +134,19 @@ runSQL($db,
     "Índice google_id"
 );
 
+// ── 4.5 Crear Admin por defecto si no existe ──────────────────────────────────
+try {
+    $stmt = $db->prepare("SELECT id FROM usuarios WHERE email = 'joeljiyane@gmail.com'");
+    $stmt->execute();
+    if (!$stmt->fetch()) {
+        $hash = password_hash('jvstore2026', PASSWORD_DEFAULT);
+        $db->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES ('Joel', 'joeljiyane@gmail.com', ?, 'admin')")->execute([$hash]);
+        $ok[] = "✅ Administrador joeljiyane@gmail.com creado";
+    }
+} catch (Throwable $e) {
+    $err[] = "⚠️ Error creando Admin: " . $e->getMessage();
+}
+
 // ── 5. Verificar tabla productos ──────────────────────────────────────────────
 try {
     $count = $db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn();
