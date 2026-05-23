@@ -1,6 +1,6 @@
 <?php
 /**
- * IMPORDISPAC - Admin: Gestión de Usuarios (Personal)
+ * JVSTORE - Admin: Gestión de Usuarios (Personal)
  * Solo accesible por Super Admins
  */
 $pageTitle = 'Usuarios del Sistema';
@@ -165,7 +165,7 @@ $flash = getFlash();
                                 <label>Email</label>
                                 <input type="email" name="email" required
                                     value="<?= sanitize($usuario['email'] ?? '') ?>"
-                                    placeholder="usuario@impordispac.com">
+                                    placeholder="usuario@jvstore.com">
                             </div>
 
                             <div class="form-group">

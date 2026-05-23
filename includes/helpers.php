@@ -147,22 +147,18 @@ function getProductImage($imagen)
  */
 function getHeaderImage($categoria_slug = '')
 {
-    // Mapa de imágenes por categoría (Unsplash)
-    // Mapa de imágenes por categoría (Local)
+    // Mapa de imágenes por categoría (Generales y Elegantes)
     $images = [
-        'motor' => BASE_URL . 'img/backgrounds/motor.jpg',
-        'frenos' => BASE_URL . 'img/backgrounds/frenos.jpg',
-        'suspension' => BASE_URL . 'img/backgrounds/suspension.jpg',
-        'electrico' => BASE_URL . 'img/backgrounds/electrico.jpg',
-        'carroceria' => BASE_URL . 'img/backgrounds/carroceria.jpg',
-        'accesorios' => BASE_URL . 'img/backgrounds/accesorios.jpg',
+        'electronica' => 'https://images.unsplash.com/photo-1468495244123-6c6c332eeece?w=1200&q=80',
+        'hogar' => 'https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1200&q=80',
+        'moda' => 'https://images.unsplash.com/photo-1483985988355-763728e1935b?w=1200&q=80',
+        'deportes' => 'https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=1200&q=80',
+        'mascotas' => 'https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=1200&q=80',
+        'herramientas' => 'https://images.unsplash.com/photo-1581783898377-1c85bf937427?w=1200&q=80',
     ];
 
-    // Normalizar slug
     $slug = strtolower($categoria_slug ?? '');
-
-    // Retornar imagen específica o default
-    return $images[$slug] ?? BASE_URL . 'img/backgrounds/taller.jpg'; // Default: Taller clean
+    return $images[$slug] ?? 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=1200&q=80'; // Elegante tienda por defecto
 }
 
 /**

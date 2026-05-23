@@ -1,7 +1,7 @@
 /**
- * IMPORDISPAC - Cart JavaScript
+ * JVSTORE - Cart JavaScript
  */
-const API_URL = (typeof BASE_URL !== 'undefined' ? BASE_URL : '/IMPORDISPAC/') + 'api/cart.php';
+const API_URL = (typeof BASE_URL !== 'undefined' ? BASE_URL : '/JVstore/') + 'api/cart.php';
 
 function addToCart(productId, cantidad = 1) {
     const formData = new FormData();

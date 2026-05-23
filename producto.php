@@ -78,8 +78,8 @@ require_once 'includes/header.php';
 
             <div class="product-info">
                 <div class="product-meta-top">
-                    <div class="oem-code" title="Código de Fabricante Original">
-                        <i class="fas fa-barcode"></i> OEM: <?= sanitize($prod['oem_code']) ?>
+                    <div class="oem-code" title="Código SKU">
+                        <i class="fas fa-barcode"></i> SKU: <?= sanitize($prod['sku'] ?? $prod['oem_code']) ?>
                     </div>
                     <?php if ($prod['marca']): ?>
                         <div class="brand-badge"><?= sanitize($prod['marca']) ?></div>
@@ -131,13 +131,13 @@ require_once 'includes/header.php';
                                 <?php endif; endforeach; ?>
                             <?php if ($prod['modelo']): ?>
                                 <tr>
-                                    <td>Modelo Vehículo</td>
+                                    <td>Modelo</td>
                                     <td><strong><?= sanitize($prod['modelo']) ?></strong></td>
                                 </tr>
                             <?php endif; ?>
                             <?php if ($prod['anio']): ?>
                                 <tr>
-                                    <td>Año Compatible</td>
+                                    <td>Año</td>
                                     <td><strong><?= sanitize($prod['anio']) ?></strong></td>
                                 </tr>
                             <?php endif; ?>

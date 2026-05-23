@@ -36,23 +36,25 @@ a{text-decoration:none;color:inherit;}
 .topbar-links{display:flex;gap:1.5rem;align-items:center;}
 
 /* ====== HEADER ====== */
-.jv-header{background:var(--navy);position:sticky;top:0;z-index:1000;box-shadow:0 2px 20px rgba(0,0,0,.3);}
-.jv-header .inner{display:flex;align-items:center;gap:1.5rem;padding:14px 0;}
-.jv-logo img{height:52px;width:auto;}
-.jv-logo-text{color:var(--white);font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.1;}
-.jv-logo-text span{display:block;font-size:.65rem;font-weight:400;color:var(--silver);letter-spacing:2px;text-transform:uppercase;}
+.jv-header{background:var(--white);position:sticky;top:0;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.06);border-bottom:1px solid var(--gray-light);}
+.jv-header .inner{display:flex;align-items:center;gap:1.5rem;padding:12px 0;}
+.jv-logo{display:flex;align-items:center;gap:10px;}
+.jv-logo img{height:58px;width:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));}
+.jv-logo-text{color:var(--navy);font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.1;}
+.jv-logo-text span{display:block;font-size:.65rem;font-weight:400;color:var(--gray);letter-spacing:2px;text-transform:uppercase;}
 
 .jv-search{flex:1;max-width:560px;position:relative;}
-.jv-search input{width:100%;padding:11px 50px 11px 18px;border-radius:8px;border:none;background:rgba(255,255,255,.1);color:var(--white);font-size:14px;outline:none;transition:background var(--trans);}
-.jv-search input::placeholder{color:var(--accent);}
-.jv-search input:focus{background:rgba(255,255,255,.18);}
+.jv-search input{width:100%;padding:11px 50px 11px 18px;border-radius:8px;border:1px solid var(--gray-light);background:var(--offwhite);color:var(--navy-dark);font-size:14px;outline:none;transition:all var(--trans);}
+.jv-search input::placeholder{color:var(--gray);}
+.jv-search input:focus{background:var(--white);border-color:var(--accent);box-shadow:0 0 0 3px rgba(139,155,180,.15);}
 .jv-search button{position:absolute;right:0;top:0;height:100%;width:48px;background:var(--gold);border:none;border-radius:0 8px 8px 0;cursor:pointer;color:var(--navy-dark);font-size:16px;transition:background var(--trans);}
 .jv-search button:hover{background:#c9a227;}
 
-.jv-header-actions{display:flex;align-items:center;gap:1rem;margin-left:auto;}
-.jv-header-btn{display:flex;flex-direction:column;align-items:center;color:var(--silver);font-size:11px;gap:3px;cursor:pointer;transition:color var(--trans);background:none;border:none;}
-.jv-header-btn i{font-size:20px;}
-.jv-header-btn:hover{color:var(--white);}
+.jv-header-actions{display:flex;align-items:center;gap:1.5rem;margin-left:auto;}
+.jv-header-btn{display:flex;flex-direction:column;align-items:center;color:var(--navy-mid);font-size:11px;font-weight:600;gap:3px;cursor:pointer;transition:all var(--trans);background:none;border:none;}
+.jv-header-btn i{font-size:20px;color:var(--navy);transition:color var(--trans);}
+.jv-header-btn:hover{color:var(--gold);}
+.jv-header-btn:hover i{color:var(--gold);}
 .jv-cart-btn{position:relative;}
 .jv-cart-count{position:absolute;top:-6px;right:-8px;background:var(--gold);color:var(--navy-dark);border-radius:50%;width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;}
 
@@ -197,7 +199,7 @@ a{text-decoration:none;color:inherit;}
 .jv-footer-bottom{border-top:1px solid rgba(255,255,255,.08);padding:20px 0;display:flex;align-items:center;justify-content:space-between;font-size:12px;}
 
 /* ====== MOBILE NAV ====== */
-.jv-mobile-toggle{display:none;background:none;border:none;color:var(--white);font-size:22px;cursor:pointer;}
+.jv-mobile-toggle{display:none;background:none;border:none;color:var(--navy);font-size:22px;cursor:pointer;}
 .jv-mobile-nav{display:none;position:fixed;inset:0;background:var(--navy-dark);z-index:9999;overflow-y:auto;padding:24px;}
 .jv-mobile-nav.open{display:block;}
 .jv-mobile-nav-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:28px;}

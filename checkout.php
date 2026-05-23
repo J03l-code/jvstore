@@ -83,7 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // --- Redirección a WhatsApp ---
         $waNumber = WHATSAPP_NUMBER;
-        $waText = "Hola IMPORDISPAC, acabo de realizar el pedido #{$pedidoId}.\n\n";
+        $waText = "Hola JVstore, acabo de realizar el pedido #{$pedidoId}.\n\n";
         $waText .= "*Detalle del pedido:*\n";
         foreach ($carrito as $item) {
             $sub = formatPrice($item['precio'] * $item['cantidad']);

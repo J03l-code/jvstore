@@ -1,6 +1,6 @@
 <aside class="admin-sidebar">
     <div class="sidebar-logo">
-        <img src="<?= BASE_URL ?>img/pacifico_blanco_super_limpio.png?v=<?= time() ?>" alt="IMPORDISPAC"
+        <img src="<?= BASE_URL ?>img/logo jv.png?v=<?= time() ?>" alt="JVSTORE"
             class="sidebar-logo-img">
         <small>Panel de Administración</small>
     </div>

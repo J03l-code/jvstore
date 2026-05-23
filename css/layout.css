@@ -567,9 +567,10 @@
 }
 
 .sidebar-logo-img {
-    max-width: 180px;
-    height: auto;
-    filter: brightness(0) invert(1);
+    max-width: 140px;
+    height: 52px;
+    object-fit: contain;
+    filter: brightness(1.1) drop-shadow(0 0 4px rgba(255,255,255,.15));
     margin-bottom: .5rem;
 }
 

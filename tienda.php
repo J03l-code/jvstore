@@ -1,6 +1,6 @@
 <?php
 $pageTitle = 'Tienda';
-$pageDescription = 'Catálogo completo de repuestos automotrices.';
+$pageDescription = 'Catálogo completo de productos de alta calidad.';
 
 require_once 'includes/header.php';
 
@@ -79,7 +79,7 @@ $totalProductos = count($productos);
     <div class="container" style="position:relative; z-index:2;">
         <h1
             style="color: #ffffff !important; text-shadow: 0 4px 8px rgba(0,0,0,0.9); font-weight: 800; font-size: 3rem;">
-            Tienda de Repuestos</h1>
+            Tienda Online</h1>
         <div class="breadcrumb"
             style="background: rgba(0,0,0,0.5); padding: 5px 15px; border-radius: 20px; display: inline-flex;">
             <a href="<?= BASE_URL ?>" style="color: #ffffff !important; text-decoration: none;">Inicio</a> <span
@@ -103,7 +103,7 @@ $totalProductos = count($productos);
                 <form method="GET" action="<?= BASE_URL ?>tienda.php" id="filterForm">
                     <div class="filter-section">
                         <h4><i class="fas fa-search"></i> Buscar</h4>
-                        <input type="text" name="buscar" placeholder="Nombre o código OEM..."
+                        <input type="text" name="buscar" placeholder="Nombre, marca o SKU..."
                             value="<?= sanitize($_GET['buscar'] ?? '') ?>">
                     </div>
                     <div class="filter-section">
@@ -118,7 +118,7 @@ $totalProductos = count($productos);
                         </select>
                     </div>
                     <div class="filter-section">
-                        <h4><i class="fas fa-car"></i> Marca</h4>
+                        <h4><i class="fas fa-tag"></i> Marca</h4>
                         <select name="marca" onchange="this.form.submit()">
                             <option value="">Todas las marcas</option>
                             <?php foreach ($marcas as $marca): ?>
@@ -129,7 +129,7 @@ $totalProductos = count($productos);
                         </select>
                     </div>
                     <div class="filter-section">
-                        <h4><i class="fas fa-car-side"></i> Modelo</h4>
+                        <h4><i class="fas fa-folder"></i> Modelo</h4>
                         <select name="modelo" onchange="this.form.submit()">
                             <option value="">Todos los modelos</option>
                             <?php foreach ($modelos as $modelo): ?>
@@ -210,8 +210,8 @@ $totalProductos = count($productos);
                                             <?= sanitize($prod['nombre']) ?>
                                         </h3>
                                     </a>
-                                    <div class="card-oem">OEM:
-                                        <?= sanitize($prod['oem_code']) ?>
+                                    <div class="card-oem">SKU:
+                                        <?= sanitize($prod['sku'] ?? $prod['oem_code']) ?>
                                     </div>
                                     <div class="card-footer">
                                         <div>

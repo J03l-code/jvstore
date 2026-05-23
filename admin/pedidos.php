@@ -1,6 +1,6 @@
 <?php
 /**
- * IMPORDISPAC - Admin: Gestión de Pedidos
+ * JVSTORE - Admin: Gestión de Pedidos
  */
 $pageTitle = 'Pedidos';
 require_once __DIR__ . '/../includes/config.php';
@@ -107,7 +107,7 @@ if (isset($_GET['ver'])) {
     $stmt->execute([(int) $_GET['ver']]);
     $pedidoInfo = $stmt->fetch();
     if ($pedidoInfo) {
-        $stmt = $db->prepare("SELECT dp.*, pr.nombre as producto_nombre, pr.imagen_url, pr.oem_code FROM detalle_pedidos dp JOIN productos pr ON dp.producto_id = pr.id WHERE dp.pedido_id = ?");
+        $stmt = $db->prepare("SELECT dp.*, pr.nombre as producto_nombre, pr.imagen_url, pr.sku, pr.oem_code FROM detalle_pedidos dp JOIN productos pr ON dp.producto_id = pr.id WHERE dp.pedido_id = ?");
         $stmt->execute([$pedidoInfo['id']]);
         $detalle = $stmt->fetchAll();
     }
@@ -236,7 +236,7 @@ $flash = getFlash();
                             <thead>
                                 <tr>
                                     <th>Producto</th>
-                                    <th>OEM</th>
+                                    <th>SKU</th>
                                     <th>Precio</th>
                                     <th>Cantidad</th>
                                     <th>Subtotal</th>
@@ -251,7 +251,7 @@ $flash = getFlash();
                                                 class="no-print">
                                             <?= sanitize($item['producto_nombre']) ?>
                                         </td>
-                                        <td><code><?= sanitize($item['oem_code']) ?></code></td>
+                                        <td><code><?= sanitize($item['sku'] ?? $item['oem_code'] ?? '') ?></code></td>
                                         <td>
                                             <?= formatPrice($item['precio_unitario']) ?>
                                         </td>
