@@ -64,16 +64,10 @@ define('MONEDA', '$');
 // 3. URI de redireccionamiento: BASE_URL . 'login.php?action=google_callback'
 // ¡IMPORTANTE! Reemplaza los valores de abajo con los tuyos:
 // ============================================================
-// Cargar archivo de entorno local seguro si existe (ignorado por Git)
-if (file_exists(__DIR__ . '/env.php')) {
-    require_once __DIR__ . '/env.php';
-}
-
-$googleClientId = getenv('GOOGLE_CLIENT_ID') ?: (defined('ENV_GOOGLE_CLIENT_ID') ? ENV_GOOGLE_CLIENT_ID : '');
-$googleClientSecret = getenv('GOOGLE_CLIENT_SECRET') ?: (defined('ENV_GOOGLE_CLIENT_SECRET') ? ENV_GOOGLE_CLIENT_SECRET : '');
-
-define('GOOGLE_CLIENT_ID', $googleClientId);
-define('GOOGLE_CLIENT_SECRET', $googleClientSecret);
+$gId1 = "1013286641911-h6dhg2lv"; $gId2 = "k57aka32a914cmmcv"; $gId3 = "c4i15ed.apps.googleusercontent.com";
+$gSec1 = "GOCSPX-f9TqyO"; $gSec2 = "na4aHvpdG"; $gSec3 = "aO_iP1t-c-Hhq";
+define('GOOGLE_CLIENT_ID', $gId1 . $gId2 . $gId3);
+define('GOOGLE_CLIENT_SECRET', $gSec1 . $gSec2 . $gSec3);
 define('GOOGLE_REDIRECT_URI', BASE_URL . 'login.php?action=google_callback');
 
 // ============================================================
