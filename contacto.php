@@ -13,6 +13,7 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
 
 $success = false;
 $errors = [];
+$nombre = $email = $telefono = $asunto = $mensaje = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre   = trim(sanitize($_POST['nombre'] ?? ''));
@@ -22,16 +23,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $mensaje  = trim(sanitize($_POST['mensaje'] ?? ''));
 
     if (!$nombre)  $errors[] = 'El nombre es obligatorio.';
-    if (!$email || !filter_var($_POST['email'], FILTER_VALIDATE_EMAIL)) $errors[] = 'Ingresa un email válido.';
+    if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL)) $errors[] = 'Ingresa un email válido.';
     if (!$mensaje) $errors[] = 'El mensaje no puede estar vacío.';
 
     if (empty($errors)) {
         try {
+            // Asegurar que la tabla mensajes exista en BD
+            $db->exec("CREATE TABLE IF NOT EXISTS `mensajes` (
+                `id`       INT(11) NOT NULL AUTO_INCREMENT,
+                `nombre`   VARCHAR(100) NOT NULL,
+                `email`    VARCHAR(100) NOT NULL,
+                `telefono` VARCHAR(20) DEFAULT NULL,
+                `asunto`   VARCHAR(200) DEFAULT NULL,
+                `mensaje`  TEXT NOT NULL,
+                `leido`    TINYINT(1) DEFAULT 0,
+                `fecha`    TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (`id`)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
+
             $stmt = $db->prepare("INSERT INTO mensajes (nombre, email, telefono, asunto, mensaje) VALUES (?, ?, ?, ?, ?)");
-            $stmt->execute([$nombre, $_POST['email'], $telefono, $asunto, $mensaje]);
+            $stmt->execute([$nombre, $email, $telefono, $asunto, $mensaje]);
             $success = true;
+            
+            // Limpiar campos tras éxito
+            $nombre = $email = $telefono = $asunto = $mensaje = '';
         } catch (Exception $e) {
-            $errors[] = 'Error al enviar el mensaje. Por favor inténtalo de nuevo.';
+            $errors[] = 'Error al enviar el mensaje: ' . sanitize($e->getMessage());
         }
     }
 }
@@ -116,14 +133,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div>
               <label style="display:block;font-size:.875rem;font-weight:600;margin-bottom:6px;color:#374151">Nombre *</label>
-              <input type="text" name="nombre" required value="<?= sanitize($_POST['nombre'] ?? '') ?>"
+              <input type="text" name="nombre" required value="<?= sanitize($nombre) ?>"
                      placeholder="Tu nombre completo"
                      style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;box-sizing:border-box;transition:.2s"
                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'">
             </div>
             <div>
               <label style="display:block;font-size:.875rem;font-weight:600;margin-bottom:6px;color:#374151">Email *</label>
-              <input type="email" name="email" required value="<?= sanitize($_POST['email'] ?? '') ?>"
+              <input type="email" name="email" required value="<?= sanitize($email) ?>"
                      placeholder="tu@email.com"
                      style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;box-sizing:border-box;transition:.2s"
                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'">
@@ -132,14 +149,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
             <div>
               <label style="display:block;font-size:.875rem;font-weight:600;margin-bottom:6px;color:#374151">Teléfono</label>
-              <input type="tel" name="telefono" value="<?= sanitize($_POST['telefono'] ?? '') ?>"
+              <input type="tel" name="telefono" value="<?= sanitize($telefono) ?>"
                      placeholder="+593 99 000 0000"
                      style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;box-sizing:border-box;transition:.2s"
                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'">
             </div>
             <div>
               <label style="display:block;font-size:.875rem;font-weight:600;margin-bottom:6px;color:#374151">Asunto</label>
-              <input type="text" name="asunto" value="<?= sanitize($_POST['asunto'] ?? '') ?>"
+              <input type="text" name="asunto" value="<?= sanitize($asunto) ?>"
                      placeholder="¿En qué podemos ayudarte?"
                      style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;box-sizing:border-box;transition:.2s"
                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'">
@@ -149,7 +166,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <label style="display:block;font-size:.875rem;font-weight:600;margin-bottom:6px;color:#374151">Mensaje *</label>
             <textarea name="mensaje" required rows="5" placeholder="Escribe tu mensaje aquí..."
                       style="width:100%;padding:12px 16px;border:1.5px solid #e2e8f0;border-radius:10px;font-size:.95rem;font-family:inherit;outline:none;resize:vertical;box-sizing:border-box;transition:.2s"
-                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'"><?= sanitize($_POST['mensaje'] ?? '') ?></textarea>
+                      onfocus="this.style.borderColor='var(--navy)'" onblur="this.style.borderColor='#e2e8f0'"><?= sanitize($mensaje) ?></textarea>
           </div>
           <button type="submit"
                   style="padding:14px 32px;background:var(--navy);color:#fff;border:none;border-radius:10px;font-size:1rem;font-weight:700;cursor:pointer;transition:.2s;display:flex;align-items:center;justify-content:center;gap:10px"

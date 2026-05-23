@@ -32,7 +32,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/layout.css">
-<link rel="stylesheet" href="<?= BASE_URL ?>css/jvstore.css?v=2.0">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/jvstore.css?v=3.5">
 <?php if(isset($extraCSS)) foreach($extraCSS as $css): ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/<?= $css ?>">
 <?php endforeach; ?>
@@ -104,69 +104,12 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
     <a href="<?= BASE_URL ?>servicios.php" <?= basename($_SERVER['PHP_SELF'])=='servicios.php'?'class="active"':'' ?>>
       <i class="fas fa-cogs"></i> Servicios
     </a>
-    <?php
-    $maxVisible = 6;
-    $visibleCats = array_slice($navCats, 0, $maxVisible);
-    $extraCats   = array_slice($navCats, $maxVisible);
-    foreach($visibleCats as $nc):
-    ?>
+    <?php foreach($navCats as $nc): ?>
     <a href="<?= BASE_URL ?>tienda.php?categoria=<?= $nc['slug'] ?>"
        class="<?= ($_GET['categoria']??'')===$nc['slug']?'active':'' ?>">
       <?= strtoupper(sanitize($nc['nombre'])) ?>
     </a>
     <?php endforeach; ?>
-    <?php if(!empty($extraCats)): ?>
-    <div class="jv-catnav-more" style="position:relative">
-      <button onclick="this.nextElementSibling.classList.toggle('open')"
-              style="background:none;border:none;cursor:pointer;padding:0;color:inherit;font:inherit;font-size:.8rem;font-weight:700;letter-spacing:.05em;display:flex;align-items:center;gap:4px;white-space:nowrap">
-        M&Aacute;S <i class="fas fa-chevron-down" style="font-size:10px"></i>
-      </button>
-      <div class="jv-catnav-dropdown" style="display:none;position:absolute;top:calc(100% + 8px);left:0;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.15);min-width:180px;z-index:999;overflow:hidden">
-        <?php foreach($extraCats as $nc): ?>
-        <a href="<?= BASE_URL ?>tienda.php?categoria=<?= $nc['slug'] ?>"
-           style="display:flex;align-items:center;gap:10px;padding:12px 18px;color:var(--navy);text-decoration:none;font-size:.875rem;font-weight:600;transition:.15s"
-           onmouseover="this.style.background='#f8fafc'" onmouseout="this.style.background=''">
-          <i class="<?= sanitize($nc['icono']) ?>" style="width:16px;text-align:center;color:var(--gold)"></i>
-          <?= sanitize($nc['nombre']) ?>
-        </a>
-        <?php endforeach; ?>
-      </div>
-    </div>
-    <script>
-    // Cerrar dropdown al hacer clic fuera
-    document.addEventListener('click', function(e) {
-      var more = document.querySelector('.jv-catnav-more');
-      if (more && !more.contains(e.target)) {
-        var dd = more.querySelector('.jv-catnav-dropdown');
-        if (dd) dd.classList.remove('open');
-      }
-    });
-    document.querySelectorAll('.jv-catnav-dropdown').forEach(function(dd) {
-      dd.style.display = 'block';
-      dd.style.opacity = '0';
-      dd.style.pointerEvents = 'none';
-      dd.style.transform = 'translateY(-8px)';
-      dd.style.transition = 'opacity .2s, transform .2s';
-    });
-    document.querySelectorAll('.jv-catnav-more button').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var dd = this.nextElementSibling;
-        var isOpen = dd.classList.contains('open');
-        if (isOpen) {
-          dd.classList.remove('open');
-          dd.style.opacity = '0';
-          dd.style.pointerEvents = 'none';
-          dd.style.transform = 'translateY(-8px)';
-        } else {
-          dd.classList.add('open');
-          dd.style.opacity = '1';
-          dd.style.pointerEvents = 'auto';
-          dd.style.transform = 'translateY(0)';
-        }
-      });
-    });
-    </script>
-    <?php endif; ?>
     <a href="<?= BASE_URL ?>nosotros.php" <?= basename($_SERVER['PHP_SELF'])=='nosotros.php'?'class="active"':'' ?>>Nosotros</a>
     <a href="<?= BASE_URL ?>contacto.php" <?= basename($_SERVER['PHP_SELF'])=='contacto.php'?'class="active"':'' ?>>Contacto</a>
   </div>
