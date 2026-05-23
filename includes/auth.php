@@ -50,7 +50,7 @@ function requireAdmin()
 {
     if (!isAdmin()) {
         setFlash('danger', 'Acceso denegado. Se requieren permisos de Administrador.');
-        redirect(BASE_URL . 'admin/');
+        redirect(BASE_URL . 'login.php');
     }
 }
 
