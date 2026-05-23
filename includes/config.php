@@ -26,9 +26,9 @@ if ($is_local) {
 } else {
     // PRODUCCIÓN (Hostinger)
     define('DB_HOST', 'localhost');
-    define('DB_NAME', 'u000000000_jvstore');   // <-- Cambiar en Hostinger
-    define('DB_USER', 'u000000000_admin');      // <-- Cambiar en Hostinger
-    define('DB_PASS', 'TuPasswordAqui');        // <-- Cambiar en Hostinger
+    define('DB_NAME', 'u434851126_jvstore_db'); // Nombre de BD en Hostinger
+    define('DB_USER', 'u434851126_jvstore_usr'); // Usuario de BD en Hostinger
+    define('DB_PASS', 'TuPasswordAqui');        // <-- ¡Asegúrate de poner tu contraseña real aquí antes del commit final!
 
     define('BASE_URL', 'https://' . $host . '/');
 
