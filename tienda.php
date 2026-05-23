@@ -18,9 +18,8 @@ $where = ["p.activo = 1"];
 $params = [];
 
 if (!empty($_GET['buscar'])) {
-    $where[] = "(p.nombre LIKE ? OR p.oem_code LIKE ? OR p.descripcion LIKE ? OR p.marca LIKE ? OR p.modelo LIKE ? OR p.compatibilidad LIKE ?)";
+    $where[] = "(p.nombre LIKE ? OR p.sku LIKE ? OR p.descripcion LIKE ? OR p.marca LIKE ? OR p.modelo LIKE ?)";
     $searchTerm = '%' . $_GET['buscar'] . '%';
-    $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;
     $params[] = $searchTerm;

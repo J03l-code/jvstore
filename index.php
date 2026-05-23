@@ -38,8 +38,8 @@ $ofertas = $db->query("
   ORDER BY RAND() LIMIT 2
 ")->fetchAll();
 
-// Categorías de productos
-$cats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('producto','ambos') ORDER BY orden,id LIMIT 12")->fetchAll();
+// Categorías (todas las activas, sin filtro de tipo)
+$cats = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY orden,id LIMIT 12")->fetchAll();
 
 // Servicios destacados
 $servicios = $db->query("
@@ -173,7 +173,7 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
   <div class="jv-cats-grid">
     <?php foreach($cats as $c): ?>
     <a href="<?= BASE_URL ?>tienda.php?categoria=<?= $c['slug'] ?>" class="jv-cat-card">
-      <div class="jv-cat-icon"><i class="<?= sanitize($c['icono']) ?>"></i></div>
+      <div class="jv-cat-icon" style="background:<?= sanitize($c['color'] ?? '#1B2A4A') ?>"><i class="<?= sanitize($c['icono']) ?>"></i></div>
       <h3><?= sanitize($c['nombre']) ?></h3>
     </a>
     <?php endforeach; ?>
