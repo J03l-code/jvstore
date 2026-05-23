@@ -49,16 +49,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Serializar carrito como JSON (guardado en campo items)
             $itemsJson = json_encode(array_values($carrito));
 
-            // Insertar pedido con el esquema correcto
+            // Insertar pedido (usuario_id = columna antigua requerida por FK, cliente_id = nueva)
             $stmt = $db->prepare("
                 INSERT INTO pedidos
-                    (cliente_id, codigo, nombre_cliente, email_cliente, telefono,
+                    (usuario_id, cliente_id, codigo, nombre_cliente, email_cliente, telefono,
                      direccion, items, subtotal, iva, costo_envio, total,
                      estado, metodo_pago, notas)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pendiente', ?, ?)
             ");
             $stmt->execute([
-                $user['id'],
+                $user['id'],   // usuario_id  (FK legacy)
+                $user['id'],   // cliente_id  (nuevo)
                 $codigo,
                 $user['nombre'],
                 $user['email'],
