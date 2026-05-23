@@ -69,7 +69,6 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
     <?php endforeach; endif; ?>
     <div class="jv-hero-overlay"></div>
     <div class="jv-hero-content">
-      <div class="jv-hero-badge"><i class="fas fa-star"></i> <?= getSiteConfig('hero_badge_texto','Envío Gratis en compras +$100') ?></div>
       <?php if(!empty($banners)): $b=$banners[0]; ?>
       <h1><?= sanitize($b['titulo'] ?? 'Tu Tienda Online de Confianza') ?></h1>
       <p><?= sanitize($b['subtitulo'] ?? 'Productos y servicios de calidad con entrega a todo el país') ?></p>
