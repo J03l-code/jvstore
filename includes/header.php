@@ -37,21 +37,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 </head>
 <body>
 
-<!-- TOP BAR -->
-<div class="jv-topbar">
-  <div class="container inner">
-    <div class="topbar-links">
-      <?php $fb=getSiteConfig('facebook'); if($fb): ?><a href="<?=$fb?>" target="_blank"><i class="fab fa-facebook-f"></i></a><?php endif; ?>
-      <?php $ig=getSiteConfig('instagram'); if($ig): ?><a href="<?=$ig?>" target="_blank"><i class="fab fa-instagram"></i></a><?php endif; ?>
-      <?php $tk=getSiteConfig('tiktok'); if($tk): ?><a href="<?=$tk?>" target="_blank"><i class="fab fa-tiktok"></i></a><?php endif; ?>
-    </div>
-    <div class="topbar-promo"><i class="fas fa-truck"></i> <?= sanitize($heroBadge) ?></div>
-    <div class="topbar-links">
-      <a href="<?= BASE_URL ?>contacto.php"><i class="fas fa-envelope"></i> Contacto</a>
-      <a href="https://wa.me/<?= $whatsapp ?>" target="_blank"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-    </div>
-  </div>
-</div>
+
 
 <!-- HEADER -->
 <header class="jv-header">
