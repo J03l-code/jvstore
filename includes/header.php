@@ -25,14 +25,12 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?><?= sanitize($siteName) ?></title>
 <meta name="description" content="<?= isset($pageDescription) ? sanitize($pageDescription) : getSiteConfig('site_description', SITE_DESCRIPTION) ?>">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/layout.css">
-<link rel="stylesheet" href="<?= BASE_URL ?>css/jvstore.css?v=3.5">
+<link rel="stylesheet" href="<?= BASE_URL ?>css/jvstore.css?v=4.0">
 <?php if(isset($extraCSS)) foreach($extraCSS as $css): ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/<?= $css ?>">
 <?php endforeach; ?>

@@ -50,8 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $user) {
     <title>Nueva Contraseña |
         <?= SITE_NAME ?>
     </title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>css/style.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>css/components.css">
     <style>

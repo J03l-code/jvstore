@@ -24,7 +24,7 @@ $servicios = $stmt->fetchAll();
 <div style="background:linear-gradient(135deg,var(--navy-dark),var(--navy));padding:50px 0 40px;">
   <div class="container">
     <span class="section-tag" style="background:rgba(212,175,55,.15);color:var(--gold)">Lo que ofrecemos</span>
-    <h1 style="font-family:'Montserrat',sans-serif;font-size:2.2rem;font-weight:900;color:#fff;margin:10px 0 12px;">Nuestros Servicios</h1>
+    <h1 style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:2.2rem;font-weight:900;color:#fff;margin:10px 0 12px;">Nuestros Servicios</h1>
     <p style="color:var(--silver);font-size:15px;max-width:500px;">Soluciones profesionales adaptadas a tus necesidades.</p>
   </div>
 </div>

@@ -1,7 +1,10 @@
 /* ====== JVSTORE - Design System ====== */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Montserrat:wght@600;700;800;900&display=swap');
+/* Tipografía self-hosted — sin llamadas a Google Fonts */
+@import url('./fonts.css');
 
 :root {
+  --font-body:    'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --navy:      #1B2A4A;
   --navy-dark: #111C33;
   --navy-mid:  #243660;
@@ -23,9 +26,10 @@
 
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html{scroll-behavior:smooth;}
-body{font-family:'Inter',sans-serif;background:var(--offwhite);color:var(--navy-dark);font-size:15px;line-height:1.6;}
+body{font-family:var(--font-body);background:var(--offwhite);color:var(--navy-dark);font-size:15px;line-height:1.6;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 img{max-width:100%;display:block;}
 a{text-decoration:none;color:inherit;}
+h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing:-.02em;line-height:1.25;}
 
 /* ====== TOP BAR ====== */
 .jv-topbar{background:var(--navy-dark);color:var(--silver);font-size:12px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);}
@@ -40,7 +44,7 @@ a{text-decoration:none;color:inherit;}
 .jv-header .inner{display:flex;align-items:center;gap:1.5rem;padding:12px 0;}
 .jv-logo{display:flex;align-items:center;gap:10px;}
 .jv-logo img{height:58px;width:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));}
-.jv-logo-text{color:var(--navy);font-family:'Montserrat',sans-serif;font-weight:800;font-size:1.2rem;line-height:1.1;}
+.jv-logo-text{color:var(--navy);font-family:var(--font-display);font-weight:800;font-size:1.2rem;line-height:1.1;}
 .jv-logo-text span{display:block;font-size:.65rem;font-weight:400;color:var(--gray);letter-spacing:2px;text-transform:uppercase;}
 
 .jv-search{flex:1;max-width:560px;position:relative;}
@@ -78,7 +82,7 @@ a{text-decoration:none;color:inherit;}
 .jv-hero-overlay{position:absolute;inset:0;background:linear-gradient(135deg,rgba(17,28,51,.85) 45%,transparent);}
 .jv-hero-content{position:relative;z-index:2;padding:50px 40px;height:100%;display:flex;flex-direction:column;justify-content:center;}
 .jv-hero-badge{display:inline-flex;align-items:center;gap:8px;background:var(--gold);color:var(--navy-dark);font-size:11px;font-weight:700;padding:5px 14px;border-radius:20px;margin-bottom:18px;letter-spacing:.5px;text-transform:uppercase;}
-.jv-hero-content h1{font-family:'Montserrat',sans-serif;font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:900;color:var(--white);line-height:1.15;margin-bottom:14px;}
+.jv-hero-content h1{font-family:var(--font-display);font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:900;color:var(--white);line-height:1.15;margin-bottom:14px;}
 .jv-hero-content h1 em{color:var(--gold);font-style:normal;}
 .jv-hero-content p{color:var(--silver);font-size:15px;max-width:480px;margin-bottom:28px;}
 .jv-hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
@@ -110,7 +114,7 @@ a{text-decoration:none;color:inherit;}
 /* ====== SECTION TITLES ====== */
 .jv-section{padding:60px 0;}
 .jv-section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:32px;}
-.jv-section-header h2{font-family:'Montserrat',sans-serif;font-size:1.5rem;font-weight:800;color:var(--navy-dark);position:relative;padding-bottom:10px;}
+.jv-section-header h2{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--navy-dark);position:relative;padding-bottom:10px;}
 .jv-section-header h2::after{content:'';position:absolute;bottom:0;left:0;width:40px;height:3px;background:var(--gold);border-radius:2px;}
 .jv-section-header a{color:var(--navy);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;transition:color var(--trans);}
 .jv-section-header a:hover{color:var(--gold);}
@@ -160,7 +164,7 @@ a{text-decoration:none;color:inherit;}
 
 /* ====== PROMO BANNER ====== */
 .jv-promo-banner{background:linear-gradient(135deg,var(--navy-dark),var(--navy-mid));border-radius:var(--radius-lg);padding:50px 40px;display:flex;align-items:center;justify-content:space-between;gap:24px;margin:0;}
-.jv-promo-text h2{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:10px;}
+.jv-promo-text h2{font-family:var(--font-display);font-size:1.8rem;font-weight:900;color:#fff;margin-bottom:10px;}
 .jv-promo-text h2 em{color:var(--gold);font-style:normal;}
 .jv-promo-text p{color:var(--silver);font-size:15px;}
 .jv-promo-cta{display:flex;flex-direction:column;gap:10px;min-width:200px;}

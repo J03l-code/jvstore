@@ -144,19 +144,19 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
 <div style="background:var(--navy);padding:20px 0;">
   <div class="container" style="display:grid;grid-template-columns:repeat(4,1fr);gap:0;text-align:center;">
     <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1)">
-      <div style="font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= number_format($totalProductos) ?>+</div>
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= number_format($totalProductos) ?>+</div>
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Productos</div>
     </div>
     <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1)">
-      <div style="font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= count($cats) ?>+</div>
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= count($cats) ?>+</div>
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Categorías</div>
     </div>
     <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1)">
-      <div style="font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)">100%</div>
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)">100%</div>
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Garantizado</div>
     </div>
     <div style="padding:10px;">
-      <div style="font-family:'Montserrat',sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)">24/7</div>
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)">24/7</div>
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Soporte</div>
     </div>
   </div>

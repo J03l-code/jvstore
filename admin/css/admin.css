@@ -1,7 +1,7 @@
 /* JVSTORE Admin Panel CSS */
-:root{--navy:#1B2A4A;--navy-dark:#111C33;--gold:#D4AF37;--silver:#8B9BB4;--white:#fff;--offwhite:#F0F2F8;--success:#2ECC71;--danger:#E63946;--warning:#F39C12;--info:#3498DB;--sidebar-w:240px;}
+:root{--navy:#1B2A4A;--navy-dark:#111C33;--gold:#D4AF37;--silver:#8B9BB4;--white:#fff;--offwhite:#F0F2F8;--success:#2ECC71;--danger:#E63946;--warning:#F39C12;--info:#3498DB;--sidebar-w:240px;--font:'Plus Jakarta Sans',system-ui,sans-serif;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter',sans-serif;background:var(--offwhite);color:#2d3748;font-size:14px;}
+body{font-family:var(--font);background:var(--offwhite);color:#2d3748;font-size:14px;-webkit-font-smoothing:antialiased;}
 a{text-decoration:none;color:inherit;}
 /* LAYOUT */
 .adm-wrap{display:flex;min-height:100vh;}
@@ -9,7 +9,7 @@ a{text-decoration:none;color:inherit;}
 .adm-sidebar{width:var(--sidebar-w);background:var(--navy-dark);position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;}
 .adm-brand{padding:20px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:10px;}
 .adm-brand img{height:36px;}
-.adm-brand span{color:#fff;font-weight:800;font-size:1rem;font-family:'Montserrat',sans-serif;}
+.adm-brand span{color:#fff;font-weight:800;font-size:1rem;font-family:var(--font);letter-spacing:-.02em;}
 .adm-nav{padding:16px 0;flex:1;}
 .adm-nav-label{color:var(--silver);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;padding:14px 18px 6px;}
 .adm-nav a{display:flex;align-items:center;gap:12px;color:rgba(255,255,255,.65);padding:11px 18px;font-size:13px;font-weight:500;transition:all .2s;border-left:3px solid transparent;}
