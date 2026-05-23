@@ -28,7 +28,7 @@ if ($is_local) {
     define('DB_HOST', 'localhost');
     define('DB_NAME', 'u434851126_jvstore_db'); // Nombre de BD en Hostinger
     define('DB_USER', 'u434851126_jvstore_usr'); // Usuario de BD en Hostinger
-    define('DB_PASS', 'TuPasswordAqui');        // <-- ¡Asegúrate de poner tu contraseña real aquí antes del commit final!
+    define('DB_PASS', 'Jvstore2026!');
 
     define('BASE_URL', 'https://' . $host . '/');
 
