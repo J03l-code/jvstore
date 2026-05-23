@@ -79,7 +79,7 @@ require_once 'includes/header.php';
                             <div class="thumb" onclick="showMedia('<?= $isVid ? 'video' : 'image' ?>', '<?= sanitize($fullUrl) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid transparent; overflow:hidden; cursor:pointer; flex-shrink:0; position:relative; background:#f1f5f9;">
                                 <?php if ($isVid): ?>
                                     <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff;">
-                                        <i class="fas fa-play-circle" style="font-size:24px; color:#ffd700;"></i>
+                                        <i class="fas fa-play-circle" style="font-size:24px; color:#0ea5e9;"></i>
                                     </div>
                                 <?php else: ?>
                                     <img src="<?= sanitize($fullUrl) ?>" style="width:100%; height:100%; object-fit:cover;">
@@ -168,7 +168,7 @@ require_once 'includes/header.php';
                 <?php if ($prod['descripcion_tecnica'] || !empty($dynamicSpecs) || $prod['marca']): ?>
                     <div class="product-specs" style="margin-top:25px; background: #f8fafc; padding: 18px; border-radius: 14px; border: 1px solid #e2e8f0;">
                         <h3 style="font-size:1rem; color:#1B2A4A; font-weight:700; margin-bottom:16px; display:flex; align-items:center; gap:8px;">
-                            <i class="fas fa-list-ul" style="color:#ffd700;"></i> Especificaciones Detalladas
+                            <i class="fas fa-list-ul" style="color:#0ea5e9;"></i> Especificaciones Detalladas
                         </h3>
 
                         <!-- Marca primero -->

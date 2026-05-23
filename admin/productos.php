@@ -279,7 +279,7 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
             
             <?php if ($isVid): ?>
               <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff">
-                <i class="fas fa-video" style="font-size:24px;color:#ffd700"></i>
+                <i class="fas fa-video" style="font-size:24px;color:#0ea5e9"></i>
               </div>
             <?php else: ?>
               <img src="<?= sanitize($displayUrl) ?>" style="width:100%;height:100%;object-fit:cover">

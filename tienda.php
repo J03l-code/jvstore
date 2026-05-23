@@ -135,7 +135,7 @@ $totalProductos = count($productos);
             <span style="color: #ffffff !important;">Tienda</span>
             <?php if (!empty($_GET['categoria'])): ?>
                 <span style="color: #ffffff !important; margin: 0 5px;">/</span> <span
-                    style="color: #ffd700 !important; font-weight: bold;">
+                    style="color: #0ea5e9 !important; font-weight: bold;">
                     <?= sanitize(ucfirst($_GET['categoria'])) ?>
                 </span>
             <?php endif; ?>
@@ -174,9 +174,9 @@ $totalProductos = count($productos);
                             $attrIcon = is_array($attr) ? ($attr['icono'] ?? 'fas fa-filter') : 'fas fa-filter';
                             ?>
                             <?php if (!empty($valoresFiltros[$attrName])): ?>
-                                <div class="filter-section" style="background: rgba(27, 42, 74, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid #ffd700;">
+                                <div class="filter-section" style="background: rgba(27, 42, 74, 0.04); padding: 12px; border-radius: 8px; border-left: 3px solid #0ea5e9;">
                                     <h4 style="color: #1B2A4A; font-weight: 700; font-size: 0.88rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
-                                        <i class="<?= sanitize($attrIcon) ?>" style="color: #ffd700; width:16px; text-align:center;"></i>
+                                        <i class="<?= sanitize($attrIcon) ?>" style="color: #0ea5e9; width:16px; text-align:center;"></i>
                                         <?= sanitize($attrName) ?>
                                     </h4>
                                     <select name="filtro[<?= sanitize($attrName) ?>]" onchange="this.form.submit()" style="border: 1px solid rgba(27, 42, 74, 0.15);">
