@@ -8,8 +8,8 @@
 // ENTORNO: Local vs Producción
 // ============================================================
 $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-$is_local = in_array($host, ['127.0.0.1', '::1', 'localhost']) 
-            || strpos($host, 'localhost:') === 0;
+$is_local = in_array($host, ['127.0.0.1', '::1', 'localhost'])
+    || strpos($host, 'localhost:') === 0;
 
 if ($is_local) {
     // LOCAL
@@ -48,13 +48,13 @@ define('UPLOAD_URL', BASE_URL . 'uploads/');
 // ============================================================
 // CONSTANTES DEL SITIO (cargadas desde BD en runtime)
 // ============================================================
-define('SITE_NAME',        'JV Ventas Online');
+define('SITE_NAME', 'JV Ventas Online');
 define('SITE_DESCRIPTION', 'Tu tienda online de confianza');
-define('WHATSAPP_NUMBER',  '5930900000000');
-define('IVA_PORCENTAJE',   15);
-define('COSTO_ENVIO',      5.00);
+define('WHATSAPP_NUMBER', '5930900000000');
+define('IVA_PORCENTAJE', 15);
+define('COSTO_ENVIO', 5.00);
 define('ENVIO_GRATIS_DESDE', 100.00);
-define('MONEDA',           '$');
+define('MONEDA', '$');
 
 // ============================================================
 // GOOGLE OAUTH 2.0
@@ -64,9 +64,9 @@ define('MONEDA',           '$');
 // 3. URI de redireccionamiento: BASE_URL . 'login.php?action=google_callback'
 // ¡IMPORTANTE! Reemplaza los valores de abajo con los tuyos:
 // ============================================================
-define('GOOGLE_CLIENT_ID',     getenv('GOOGLE_CLIENT_ID')     ?: '');  // Ej: 12345.apps.googleusercontent.com
-define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');  // Tu client_secret
-define('GOOGLE_REDIRECT_URI',  BASE_URL . 'login.php?action=google_callback');
+define('GOOGLE_CLIENT_ID', getenv('GOOGLE_CLIENT_ID') ?: '');
+define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');
+define('GOOGLE_REDIRECT_URI', BASE_URL . 'login.php?action=google_callback');
 
 // ============================================================
 // SESIÓN
