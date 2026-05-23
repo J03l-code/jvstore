@@ -6,9 +6,6 @@ SET NAMES utf8mb4;
 SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 
-CREATE DATABASE IF NOT EXISTS `jvstore_db` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `jvstore_db`;
-
 -- ============================================================
 -- TABLA: usuarios (Admin/Staff)
 -- ============================================================
