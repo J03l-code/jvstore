@@ -57,8 +57,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
   }
 
   if($action === 'delete'){
-    $db->prepare("UPDATE servicios SET activo=0 WHERE id=?")->execute([(int)$_POST['id']]);
-    setFlash('success','Servicio eliminado'); redirect(BASE_URL.'admin/servicios.php');
+    $id = (int)$_POST['id'];
+    try {
+      $db->prepare("DELETE FROM servicios WHERE id=?")->execute([$id]);
+      setFlash('success','Servicio eliminado permanentemente');
+    } catch (Exception $e) {
+      $db->prepare("UPDATE servicios SET activo=0 WHERE id=?")->execute([$id]);
+      setFlash('warning','Servicio desactivado (hay dependencias que impiden eliminarlo)');
+    }
+    redirect(BASE_URL.'admin/servicios.php');
   }
   if($action === 'toggle'){
     $db->prepare("UPDATE servicios SET activo = NOT activo WHERE id=?")->execute([(int)$_POST['id']]);
