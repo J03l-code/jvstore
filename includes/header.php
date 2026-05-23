@@ -34,6 +34,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <?php if(isset($extraCSS)) foreach($extraCSS as $css): ?>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/<?= $css ?>">
 <?php endforeach; ?>
+<script>window.BASE_URL = '<?= BASE_URL ?>';</script>
 </head>
 <body>
 

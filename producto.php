@@ -376,6 +376,5 @@ require_once 'includes/header.php';
 </script>
 
 <?php
-$extraScripts = ['cart.js'];
 require_once 'includes/footer.php';
 ?>

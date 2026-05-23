@@ -114,6 +114,5 @@ $total = $subtotal + $iva + $envio;
 </section>
 
 <?php
-$extraScripts = ['cart.js'];
 require_once 'includes/footer.php';
 ?>

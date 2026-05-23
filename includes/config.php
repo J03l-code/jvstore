@@ -56,9 +56,16 @@ define('COSTO_ENVIO',      5.00);
 define('ENVIO_GRATIS_DESDE', 100.00);
 define('MONEDA',           '$');
 
-// Google OAuth (opcional)
-define('GOOGLE_CLIENT_ID',     '');
-define('GOOGLE_CLIENT_SECRET', '');
+// ============================================================
+// GOOGLE OAUTH 2.0
+// ============================================================
+// 1. Ve a: https://console.cloud.google.com/
+// 2. Crea un proyecto → Credenciales → OAuth 2.0 → Aplicación web
+// 3. URI de redireccionamiento: BASE_URL . 'login.php?action=google_callback'
+// ¡IMPORTANTE! Reemplaza los valores de abajo con los tuyos:
+// ============================================================
+define('GOOGLE_CLIENT_ID',     getenv('GOOGLE_CLIENT_ID')     ?: '');  // Ej: 12345.apps.googleusercontent.com
+define('GOOGLE_CLIENT_SECRET', getenv('GOOGLE_CLIENT_SECRET') ?: '');  // Tu client_secret
 define('GOOGLE_REDIRECT_URI',  BASE_URL . 'login.php?action=google_callback');
 
 // ============================================================

@@ -187,19 +187,26 @@ function sendEmail($to, $subject, $message)
 }
 
 /**
- * Sincroniza el carrito actual hacia la base de datos (Persistencia)
+ * Sincroniza el carrito actual hacia la base de datos (Persistencia opcional)
+ * Solo sincroniza si el usuario es un cliente autenticado
  */
 function syncCartToDB()
 {
-    if (isset($_SESSION['usuario_id'], $_SESSION['usuario_tabla']) && $_SESSION['usuario_tabla'] === 'clientes') {
-        try {
-            $db = getDB();
-            $carritoJson = json_encode($_SESSION['carrito'] ?? []);
-            $stmt = $db->prepare("UPDATE clientes SET carrito = ? WHERE id = ?");
-            $stmt->execute([$carritoJson, $_SESSION['usuario_id']]);
-        } catch (Exception $e) {
-            // Ignorar el error si la columna no existe en bd
-        }
+    if (!isset($_SESSION['usuario_id'], $_SESSION['usuario_tabla'])) return;
+    if ($_SESSION['usuario_tabla'] !== 'clientes') return;
+
+    try {
+        $db = getDB();
+        // Verificar que la columna 'carrito' existe en la tabla
+        $col = $db->query("SHOW COLUMNS FROM clientes LIKE 'carrito'")->fetch();
+        if (!$col) return; // Columna no existe aún (BD no migrada)
+
+        $carritoJson = json_encode($_SESSION['carrito'] ?? []);
+        $stmt = $db->prepare("UPDATE clientes SET carrito = ? WHERE id = ?");
+        $stmt->execute([$carritoJson, $_SESSION['usuario_id']]);
+    } catch (Throwable $e) {
+        error_log('[JVStore syncCartToDB] ' . $e->getMessage());
+        // No lanzar el error — el carrito de sesión es suficiente
     }
 }
 

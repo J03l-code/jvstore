@@ -91,6 +91,7 @@ $tk       = getSiteConfig('tiktok', '');
 </a>
 
 <script src="<?= BASE_URL ?>js/jvstore.js?v=2.0"></script>
+<script src="<?= BASE_URL ?>js/cart.js?v=3.0"></script>
 <?php if(isset($extraScripts)) foreach($extraScripts as $s): ?>
 <script src="<?= BASE_URL ?>js/<?= $s ?>"></script>
 <?php endforeach; ?>

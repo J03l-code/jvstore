@@ -317,6 +317,5 @@ $totalProductos = count($productos);
 </section>
 
 <?php
-$extraScripts = ['cart.js'];
 require_once 'includes/footer.php';
 ?>
