@@ -49,6 +49,13 @@ function requireLogin()
 function requireAdmin()
 {
     if (!isAdmin()) {
+        if (isLoggedIn()) {
+            // Está logueado pero no es admin. Cerramos su sesión de cliente para que pueda loguearse como admin.
+            session_unset();
+            session_destroy();
+            session_start();
+        }
+        $_SESSION['redirect_after_login'] = $_SERVER['REQUEST_URI'];
         setFlash('danger', 'Acceso denegado. Se requieren permisos de Administrador.');
         redirect(BASE_URL . 'login.php');
     }
@@ -201,7 +208,18 @@ function handleGoogleCallback($code)
 
     $db = getDB();
 
-    // Buscar en clientes
+    // 1. Verificar si el email pertenece a un administrador o staff en la tabla 'usuarios'
+    $stmt = $db->prepare("SELECT * FROM usuarios WHERE email = ?");
+    $stmt->execute([$googleUser['email']]);
+    $adminUser = $stmt->fetch();
+
+    if ($adminUser) {
+        // Es administrador/staff. Iniciar sesión como usuario.
+        setSessionData($adminUser, 'usuario');
+        return true;
+    }
+
+    // 2. Si no es admin, buscar en clientes
     $stmt = $db->prepare("SELECT * FROM clientes WHERE email = ? OR google_id = ?");
     $stmt->execute([$googleUser['email'], $googleUser['id']]);
     $user = $stmt->fetch();

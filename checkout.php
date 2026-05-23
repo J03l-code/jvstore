@@ -113,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } catch (Throwable $e) {
             $db->rollBack();
             error_log('[Checkout] ' . $e->getMessage());
-            $error = 'Error al procesar el pedido. Por favor intenta nuevamente.';
+            $error = 'Error de BD: ' . $e->getMessage();
         }
     }
 }
