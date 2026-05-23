@@ -25,6 +25,17 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
 
   if($action === 'save'){
     $id      = (int)($_POST['id'] ?? 0);
+    
+    // Procesar atributos dinámicos específicos de la categoría
+    $atributosDinamicos = $_POST['atributos_dinamicos'] ?? [];
+    $atributosJson = null;
+    if (is_array($atributosDinamicos) && !empty($atributosDinamicos)) {
+        $filtered = array_filter(array_map('trim', $atributosDinamicos), fn($v) => $v !== '');
+        if (!empty($filtered)) {
+            $atributosJson = json_encode($filtered, JSON_UNESCAPED_UNICODE);
+        }
+    }
+
     $data = [
       'categoria_id'      => ($_POST['categoria_id'] ?: null),
       'nombre'            => trim($_POST['nombre'] ?? ''),
@@ -40,6 +51,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'destacado'         => isset($_POST['destacado']) ? 1 : 0,
       'nuevo'             => isset($_POST['nuevo']) ? 1 : 0,
       'activo'            => isset($_POST['activo']) ? 1 : 0,
+      'atributos'         => $atributosJson,
     ];
     if(!$data['nombre']){ setFlash('danger','El nombre es obligatorio'); redirect(BASE_URL.'admin/productos.php'); }
 
@@ -199,7 +211,68 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
           </label>
         </div>
       </div>
+      
+      <!-- Atributos Dinámicos según la Categoría Seleccionada -->
+      <div class="form-group full" id="dynamic-attributes-container" style="display:none;background:#f8fafc;padding:18px;border-radius:12px;border:1.5px dashed #cbd5e1;margin-top:15px">
+        <label class="form-label" style="color:var(--navy);font-weight:700;margin-bottom:12px"><i class="fas fa-filter"></i> Especificaciones y Filtros Dinámicos</label>
+        <div id="dynamic-attributes-fields" style="display:grid;grid-template-columns:repeat(auto-fill, minmax(250px, 1fr));gap:16px">
+          <!-- Campos dinámicos inyectados por Javascript -->
+        </div>
+      </div>
+
     </div>
+
+    <?php
+    // Generar mapa de atributos por categoria
+    $catAttrs = [];
+    $allCategories = $db->query("SELECT id, atributos FROM categorias")->fetchAll();
+    foreach ($allCategories as $catItem) {
+        $catAttrs[$catItem['id']] = json_decode($catItem['atributos'] ?? '[]', true) ?: [];
+    }
+    ?>
+    <script>
+    const categoryAttributes = <?= json_encode($catAttrs, JSON_UNESCAPED_UNICODE) ?>;
+    const activeAttributes = <?= json_encode(json_decode($editProd['atributos'] ?? '[]', true) ?: (object)[], JSON_UNESCAPED_UNICODE) ?>;
+
+    function renderDynamicAttributes() {
+        const select = document.querySelector('[name=categoria_id]');
+        const container = document.getElementById('dynamic-attributes-container');
+        const fieldsDiv = document.getElementById('dynamic-attributes-fields');
+        
+        if (!select || !container || !fieldsDiv) return;
+        
+        const catId = select.value;
+        const attrs = categoryAttributes[catId] || [];
+        
+        if (attrs.length === 0) {
+            container.style.display = 'none';
+            fieldsDiv.innerHTML = '';
+            return;
+        }
+        
+        container.style.display = 'block';
+        let html = '';
+        attrs.forEach(attrName => {
+            const val = activeAttributes[attrName] || '';
+            html += `
+              <div class="form-group">
+                <label class="form-label" style="font-size:11px;color:#475569">${attrName}</label>
+                <input type="text" name="atributos_dinamicos[${attrName}]" class="form-control" value="${val}" placeholder="Valor de ${attrName}">
+              </div>
+            `;
+        });
+        fieldsDiv.innerHTML = html;
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const select = document.querySelector('[name=categoria_id]');
+        if (select) {
+            select.addEventListener('change', renderDynamicAttributes);
+            renderDynamicAttributes(); // Render first time
+        }
+    });
+    </script>
+
     <div style="display:flex;gap:12px;margin-top:24px">
       <button type="submit" class="btn btn-gold"><i class="fas fa-save"></i> <?= $editProd?'Actualizar':'Crear' ?> Producto</button>
       <a href="<?= BASE_URL ?>admin/productos.php" class="btn btn-outline">Cancelar</a>

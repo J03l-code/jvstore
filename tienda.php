@@ -9,6 +9,31 @@ $db = getDB();
 // Obtener categorías para filtros
 $categorias = $db->query("SELECT * FROM categorias WHERE activo = 1 ORDER BY nombre")->fetchAll();
 
+// Cargar categoría activa para filtros dinámicos
+$categoriaActiva = null;
+$atributosFiltrables = [];
+$valoresFiltros = [];
+
+if (!empty($_GET['categoria'])) {
+    $stmtCat = $db->prepare("SELECT * FROM categorias WHERE slug = ? AND activo = 1");
+    $stmtCat->execute([$_GET['categoria']]);
+    $categoriaActiva = $stmtCat->fetch();
+    
+    if ($categoriaActiva && !empty($categoriaActiva['atributos'])) {
+        $atributosFiltrables = json_decode($categoriaActiva['atributos'], true) ?: [];
+        foreach ($atributosFiltrables as $attrName) {
+            // Obtener valores únicos reales para este atributo en esta categoría
+            $sqlAttr = "SELECT DISTINCT JSON_UNQUOTE(JSON_EXTRACT(atributos, '$." . str_replace('"', '\\"', $attrName) . "')) AS val 
+                        FROM productos 
+                        WHERE categoria_id = ? AND activo = 1 AND atributos IS NOT NULL";
+            $stmtAttr = $db->prepare($sqlAttr);
+            $stmtAttr->execute([$categoriaActiva['id']]);
+            $valores = $stmtAttr->fetchAll(PDO::FETCH_COLUMN);
+            $valoresFiltros[$attrName] = array_values(array_filter($valores, fn($v) => $v !== null && $v !== ''));
+        }
+    }
+}
+
 // Obtener marcas y modelos únicos
 $marcas = $db->query("SELECT DISTINCT marca FROM productos WHERE activo = 1 AND marca IS NOT NULL ORDER BY marca")->fetchAll(PDO::FETCH_COLUMN);
 $modelos = $db->query("SELECT DISTINCT modelo FROM productos WHERE activo = 1 AND modelo IS NOT NULL ORDER BY modelo")->fetchAll(PDO::FETCH_COLUMN);
@@ -45,6 +70,16 @@ if (!empty($_GET['precio_min'])) {
 if (!empty($_GET['precio_max'])) {
     $where[] = "COALESCE(p.precio_oferta, p.precio) <= ?";
     $params[] = (float) $_GET['precio_max'];
+}
+
+// Aplicar filtros dinámicos si corresponden a la categoría seleccionada
+if ($categoriaActiva && !empty($_GET['filtro']) && is_array($_GET['filtro'])) {
+    foreach ($_GET['filtro'] as $key => $value) {
+        if ($value !== '' && in_array($key, $atributosFiltrables)) {
+            $where[] = "JSON_UNQUOTE(JSON_EXTRACT(p.atributos, '$." . str_replace('"', '\\"', $key) . "')) = ?";
+            $params[] = $value;
+        }
+    }
 }
 
 $orderBy = "p.created_at DESC";
@@ -116,6 +151,27 @@ $totalProductos = count($productos);
                             <?php endforeach; ?>
                         </select>
                     </div>
+
+                    <!-- Filtros Dinámicos de Categoría -->
+                    <?php if (!empty($atributosFiltrables)): ?>
+                        <?php foreach ($atributosFiltrables as $attrName): ?>
+                            <?php if (!empty($valoresFiltros[$attrName])): ?>
+                                <div class="filter-section" style="background: rgba(27, 42, 74, 0.03); padding: 12px; border-radius: 8px; border-left: 3px solid #ffd700;">
+                                    <h4 style="color: #1B2A4A; font-weight: 700; font-size: 0.9rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                                        <i class="fas fa-sliders-h" style="color: #ffd700;"></i> <?= sanitize($attrName) ?>
+                                    </h4>
+                                    <select name="filtro[<?= sanitize($attrName) ?>]" onchange="this.form.submit()" style="border: 1px solid rgba(27, 42, 74, 0.15);">
+                                        <option value="">Todos/as</option>
+                                        <?php foreach ($valoresFiltros[$attrName] as $val): ?>
+                                            <option value="<?= sanitize($val) ?>" <?= ($_GET['filtro'][$attrName] ?? '') === $val ? 'selected' : '' ?>>
+                                                <?= sanitize($val) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            <?php endif; ?>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
                     <div class="filter-section">
                         <h4><i class="fas fa-tag"></i> Marca</h4>
                         <select name="marca" onchange="this.form.submit()">

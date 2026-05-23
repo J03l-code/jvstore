@@ -114,33 +114,57 @@ require_once 'includes/header.php';
                     <?= $prod['stock'] > 5 ? 'En Stock (' . $prod['stock'] . ' disponibles)' : ($prod['stock'] > 0 ? 'Últimas ' . $prod['stock'] . ' unidades' : 'Agotado') ?>
                 </div>
 
-                <?php if ($prod['descripcion_tecnica']): ?>
-                    <div class="product-specs">
-                        <h3><i class="fas fa-cogs"></i> Especificaciones</h3>
-                        <table class="specs-table">
-                            <?php
-                            $specs = explode('|', $prod['descripcion_tecnica']);
-                            foreach ($specs as $spec):
-                                $parts = explode(':', $spec, 2);
-                                if (count($parts) === 2):
-                                    ?>
-                                    <tr>
-                                        <td><?= sanitize(trim($parts[0])) ?></td>
-                                        <td><strong><?= sanitize(trim($parts[1])) ?></strong></td>
-                                    </tr>
-                                <?php endif; endforeach; ?>
+                <?php
+                $dynamicSpecs = [];
+                if (!empty($prod['atributos'])) {
+                    $dynamicSpecs = json_decode($prod['atributos'], true) ?: [];
+                }
+                ?>
+
+                <?php if ($prod['descripcion_tecnica'] || !empty($dynamicSpecs) || $prod['modelo'] || $prod['marca']): ?>
+                    <div class="product-specs" style="margin-top:25px; background: #f8fafc; padding: 15px; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <h3 style="font-size:1.05rem; color:#1B2A4A; font-weight:700; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+                            <i class="fas fa-list-ul" style="color:#ffd700;"></i> Especificaciones Detalladas
+                        </h3>
+                        <table class="specs-table" style="width:100%; border-collapse:collapse;">
+                            <?php if ($prod['marca']): ?>
+                                <tr>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;">Marca</td>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($prod['marca']) ?></strong></td>
+                                </tr>
+                            <?php endif; ?>
                             <?php if ($prod['modelo']): ?>
                                 <tr>
-                                    <td>Modelo</td>
-                                    <td><strong><?= sanitize($prod['modelo']) ?></strong></td>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;">Modelo</td>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($prod['modelo']) ?></strong></td>
                                 </tr>
                             <?php endif; ?>
-                            <?php if ($prod['anio']): ?>
+                            
+                            <!-- Atributos Dinámicos -->
+                            <?php foreach ($dynamicSpecs as $key => $val): ?>
                                 <tr>
-                                    <td>Año</td>
-                                    <td><strong><?= sanitize($prod['anio']) ?></strong></td>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;"><?= sanitize($key) ?></td>
+                                    <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize($val) ?></strong></td>
                                 </tr>
-                            <?php endif; ?>
+                            <?php endforeach; ?>
+
+                            <!-- Atributos Legacy -->
+                            <?php
+                            if ($prod['descripcion_tecnica']) {
+                                $specs = explode('|', $prod['descripcion_tecnica']);
+                                foreach ($specs as $spec):
+                                    $parts = explode(':', $spec, 2);
+                                    if (count($parts) === 2):
+                                        ?>
+                                        <tr>
+                                            <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; color:#64748b; font-size:13px;"><?= sanitize(trim($parts[0])) ?></td>
+                                            <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; font-size:13px;"><strong><?= sanitize(trim($parts[1])) ?></strong></td>
+                                        </tr>
+                                        <?php
+                                    endif;
+                                endforeach;
+                            }
+                            ?>
                         </table>
                     </div>
                 <?php endif; ?>

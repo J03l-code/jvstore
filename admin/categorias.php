@@ -6,6 +6,24 @@ $pageTitle = 'Categorías';
 require_once __DIR__ . '/includes/header.php';
 $db = getDB();
 
+// Auto-migración silenciosa de columnas de atributos
+try {
+  $q1 = $db->query("SHOW COLUMNS FROM categorias LIKE 'atributos'");
+  if (!$q1->fetch()) {
+      $db->exec("ALTER TABLE categorias ADD COLUMN atributos TEXT DEFAULT NULL");
+  }
+  $q2 = $db->query("SHOW COLUMNS FROM productos LIKE 'atributos'");
+  if (!$q2->fetch()) {
+      $db->exec("ALTER TABLE productos ADD COLUMN atributos TEXT DEFAULT NULL");
+  }
+  $q3 = $db->query("SHOW COLUMNS FROM servicios LIKE 'atributos'");
+  if (!$q3->fetch()) {
+      $db->exec("ALTER TABLE servicios ADD COLUMN atributos TEXT DEFAULT NULL");
+  }
+} catch (Exception $e) {
+  error_log("Error auto-migración: " . $e->getMessage());
+}
+
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
   $action = $_POST['action'] ?? '';
 
@@ -13,6 +31,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     $id = (int)($_POST['id'] ?? 0);
     $nombre = trim($_POST['nombre'] ?? '');
     if(!$nombre){ setFlash('danger','Nombre requerido'); redirect(BASE_URL.'admin/categorias.php'); }
+    
+    $rawAtributos = trim($_POST['atributos'] ?? '');
+    $atributosJson = null;
+    if ($rawAtributos !== '') {
+        $arr = array_filter(array_map('trim', explode(',', $rawAtributos)));
+        $atributosJson = json_encode(array_values($arr), JSON_UNESCAPED_UNICODE);
+    }
+
     $data = [
       'nombre'      => $nombre,
       'slug'        => generateSlug($nombre),
@@ -22,6 +48,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'tipo'        => $_POST['tipo'] ?? 'producto',
       'orden'       => (int)($_POST['orden'] ?? 0),
       'activo'      => isset($_POST['activo']) ? 1 : 0,
+      'atributos'   => $atributosJson,
     ];
     if($id){
       $sets = implode(',', array_map(fn($k)=>"$k=:$k", array_keys($data)));
@@ -114,6 +141,24 @@ $categorias = $db->query("
       <div class="form-group full">
         <label class="form-label">Descripción</label>
         <textarea name="descripcion" class="form-control" rows="3"><?= sanitize($editCat['descripcion']??'') ?></textarea>
+      </div>
+      <div class="form-group full" style="border-top:1px solid #f1f5f9;padding-top:15px;margin-top:10px">
+        <label class="form-label" style="color:var(--navy);font-weight:700">Filtros de Búsqueda (Atributos de Categoría)</label>
+        <?php
+        $atributosVal = '';
+        if (!empty($editCat['atributos'])) {
+            $arr = json_decode($editCat['atributos'], true);
+            if (is_array($arr)) {
+                $atributosVal = implode(', ', $arr);
+            } else {
+                $atributosVal = $editCat['atributos'];
+            }
+        }
+        ?>
+        <input type="text" name="atributos" class="form-control" value="<?= sanitize($atributosVal) ?>" placeholder="Ej: Marca, Memoria RAM, Almacenamiento, Talla, Color, Material">
+        <small style="color:#64748b;font-size:12px;margin-top:4px;display:block">
+          Escribe los atributos específicos para esta categoría separados por comas. Ejemplo para calzado: <strong>Marca, Talla, Color, Tipo de Suela</strong>.
+        </small>
       </div>
     </div>
     <div style="display:flex;gap:12px;margin-top:20px">
