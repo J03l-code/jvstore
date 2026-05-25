@@ -90,6 +90,25 @@ require_once 'includes/header.php';
                     <?= nl2br(sanitize($serv['descripcion'])) ?>
                 </div>
 
+                <?php
+                $subservicios = json_decode($serv['caracteristicas'] ?? '[]', true) ?: [];
+                if (!empty($subservicios)):
+                ?>
+                <div class="service-features" style="margin-top: 30px; border-top: 1px solid #e2e8f0; padding-top: 25px;">
+                    <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--navy-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-list-ul" style="color: var(--gold);"></i> ¿Qué incluye este servicio?
+                    </h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px;">
+                        <?php foreach ($subservicios as $item): ?>
+                            <div style="display: flex; align-items: center; gap: 10px; background: #f8fafc; padding: 12px 16px; border-radius: 8px; border: 1px solid #e2e8f0; transition: transform 0.2s;" onmouseover="this.style.transform='translateY(-2px)'" onmouseout="this.style.transform='translateY(0)'">
+                                <i class="fas fa-check-circle" style="color: #10b981; font-size: 1rem; flex-shrink: 0;"></i>
+                                <span style="font-size: 0.95rem; font-weight: 600; color: var(--navy-mid);"><?= sanitize($item) ?></span>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
                 <div class="purchase-actions" style="margin-top: 30px;">
                     <a href="https://wa.me/<?= getSiteConfig('whatsapp',WHATSAPP_NUMBER) ?>?text=Hola,%20me%20interesa%20el%20servicio:%20<?= urlencode($serv['titulo']) ?>"
                        target="_blank"

@@ -32,6 +32,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'descripcion_corta' => trim($_POST['descripcion_corta'] ?? ''),
       'precio_desde'      => ($_POST['precio_desde'] !== '' ? (float)$_POST['precio_desde'] : null),
       'icono'             => trim($_POST['icono'] ?? 'fas fa-cog'),
+      'caracteristicas'   => trim($_POST['caracteristicas'] ?? '[]'),
       'destacado'         => isset($_POST['destacado']) ? 1 : 0,
       'orden'             => (int)($_POST['orden'] ?? 0),
       'activo'            => isset($_POST['activo']) ? 1 : 0,
@@ -127,6 +128,17 @@ $allCats    = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
         <label class="form-label">Descripción Completa</label>
         <textarea name="descripcion" class="form-control" rows="5"><?= sanitize($editServ['descripcion']??'') ?></textarea>
       </div>
+      <div class="form-group full" style="border: 1px solid #e2e8f0; padding: 18px; border-radius: 12px; background: #f8fafc; margin-top: 10px;">
+        <label class="form-label" style="font-weight: 700; color: var(--navy-dark); font-size: 14px;">Sub-servicios / Qué incluye (Ej: Poda, Riego, Abono)</label>
+        <div style="display: flex; gap: 8px; margin-bottom: 12px; margin-top: 8px;">
+          <input type="text" id="subservicioInput" class="form-control" style="flex:1" placeholder="Ej: Poda estética de arbustos">
+          <button type="button" class="btn btn-navy" onclick="addSubservicio()" style="white-space: nowrap; height: 42px;"><i class="fas fa-plus"></i> Agregar</button>
+        </div>
+        <div id="subserviciosContainer" style="display: flex; flex-direction: column; gap: 8px;">
+          <!-- Items representados por JS -->
+        </div>
+        <input type="hidden" name="caracteristicas" id="caracteristicasInput" value="<?= sanitize($editServ['caracteristicas'] ?? '[]') ?>">
+      </div>
       <div class="form-group">
         <label class="form-label">Imagen (opcional)</label>
         <input type="file" name="imagen" class="form-control" accept="image/*" onchange="previewImage(this,'prevServImg')">
@@ -214,5 +226,81 @@ $allCats    = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
   </div>
 </div>
 <?php endif; ?>
+
+<script>
+let subservicios = <?= $editServ ? ($editServ['caracteristicas'] ?: '[]') : '[]' ?>;
+
+function renderSubservicios() {
+    const container = document.getElementById('subserviciosContainer');
+    const hiddenInput = document.getElementById('caracteristicasInput');
+    if (!container || !hiddenInput) return;
+    
+    container.innerHTML = '';
+    
+    // Validar formato array
+    if (!Array.isArray(subservicios)) {
+        subservicios = [];
+    }
+    
+    if (subservicios.length === 0) {
+        container.innerHTML = '<div style="color: #94a3b8; font-size: 13px; font-style: italic;">No se han agregado sub-servicios o características aún.</div>';
+    } else {
+        subservicios.forEach((item, index) => {
+            const div = document.createElement('div');
+            div.style = 'display: flex; align-items: center; justify-content: space-between; background: #fff; padding: 10px 14px; border-radius: 8px; border: 1px solid #e2e8f0; box-shadow: 0 1px 3px rgba(0,0,0,0.02);';
+            div.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 10px; color: var(--navy-dark); font-weight: 600; font-size: 13px;">
+                    <i class="fas fa-check-circle" style="color: #10b981;"></i>
+                    <span>${escapeHtml(item)}</span>
+                </div>
+                <button type="button" class="btn btn-sm btn-danger" onclick="removeSubservicio(${index})" style="padding: 4px 8px; font-size: 11px; margin-left: auto; height: 28px; width: 28px; display: flex; align-items: center; justify-content: center; border-radius: 6px;">
+                    <i class="fas fa-trash"></i>
+                </button>
+            `;
+            container.appendChild(div);
+        });
+    }
+    
+    hiddenInput.value = JSON.stringify(subservicios);
+}
+
+function addSubservicio() {
+    const input = document.getElementById('subservicioInput');
+    if (!input) return;
+    const val = input.value.trim();
+    if (val) {
+        subservicios.push(val);
+        input.value = '';
+        renderSubservicios();
+    }
+}
+
+function removeSubservicio(index) {
+    subservicios.splice(index, 1);
+    renderSubservicios();
+}
+
+function escapeHtml(text) {
+    return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const input = document.getElementById('subservicioInput');
+    if (input) {
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addSubservicio();
+            }
+        });
+        renderSubservicios();
+    }
+});
+</script>
 
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
