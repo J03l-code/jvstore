@@ -233,6 +233,7 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
   .jv-footer-main{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:768px){
+  .jv-logo img{height:auto;width:180px;margin:0;max-width:100% !important;}
   .jv-search{display:none;}
   .jv-mobile-toggle{display:block;}
   .jv-topbar .inner>:not(.topbar-promo){display:none;}

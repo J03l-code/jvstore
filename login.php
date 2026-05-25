@@ -69,7 +69,14 @@ require_once 'includes/header.php';
     max-width: 900px;
     width: 100%;
 }
-@media(max-width:640px){ .login-box{grid-template-columns:1fr;} .login-visual{display:none;} }
+@media(max-width:768px){ 
+    .login-box{grid-template-columns:1fr;} 
+    .login-visual{padding: 2rem 1.5rem;}
+    .login-visual-logo { height: 120px; width: auto; max-width: 100%; margin-bottom: 1rem; }
+}
+@media(max-width:480px){ 
+    .login-visual{display:none;} 
+}
 
 /* Panel visual */
 .login-visual {
