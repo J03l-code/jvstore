@@ -43,7 +43,7 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
 .jv-header{background:var(--white) !important;position:sticky;top:0;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.06);border-bottom:1px solid var(--gray-light) !important;}
 .jv-header .inner{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:2rem;padding:10px 0;}
 .jv-logo{display:flex;align-items:center;gap:10px;justify-content:flex-start;}
-.jv-logo img{height:162px;margin-top:-40px;margin-bottom:-40px;width:auto;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));object-fit:contain;}
+.jv-logo img{height:162px;margin-top:-40px;margin-bottom:-40px;width:auto;max-width:none !important;display:block;filter:drop-shadow(0 2px 4px rgba(0,0,0,.08));object-fit:contain;}
 .jv-logo-text{color:var(--navy);font-family:var(--font-display);font-weight:800;font-size:1.2rem;line-height:1.1;}
 .jv-logo-text span{display:block;font-size:.65rem;font-weight:400;color:var(--gray);letter-spacing:2px;text-transform:uppercase;}
 
