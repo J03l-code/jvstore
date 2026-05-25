@@ -321,6 +321,17 @@ $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
           container.appendChild(input);
       }
       </script>
+      <div class="form-group full" style="border-top:1px solid #f1f5f9;padding-top:15px;margin-top:15px">
+        <label class="form-label" style="color:var(--navy);font-weight:700">Descripción del Producto</label>
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Descripción Corta (se muestra en la tarjeta del producto)</label>
+        <input type="text" name="descripcion_corta" class="form-control" value="<?= sanitize($editProd['descripcion_corta']??'') ?>" placeholder="Breve resumen de 1 o 2 líneas" maxlength="300">
+      </div>
+      <div class="form-group full">
+        <label class="form-label">Descripción Completa</label>
+        <textarea name="descripcion" class="form-control" rows="5" placeholder="Especificaciones detalladas, características del producto..."><?= sanitize($editProd['descripcion']??'') ?></textarea>
+      </div>
       <div class="form-group">
         <label class="form-label">Opciones</label>
         <div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">
