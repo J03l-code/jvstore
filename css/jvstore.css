@@ -235,14 +235,14 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
 }
 @media(max-width:768px){
   .jv-header .inner{position:relative;display:flex;flex-wrap:wrap;align-items:center;padding:8px 0;}
-  .jv-logo{position:absolute !important;left:50% !important;top:28px !important;transform:translate(-50%, -50%) !important;z-index:10 !important;width:auto !important;max-width:160px !important;height:auto !important;}
-  .jv-logo img{height:45px !important;width:auto !important;margin:0 !important;max-width:100% !important;pointer-events:auto !important;}
-  .jv-header-actions{position:absolute !important;right:15px !important;top:28px !important;transform:translateY(-50%) !important;gap:1.2rem !important;z-index:10 !important;}
+  .jv-logo{position:absolute !important;left:50% !important;top:35px !important;transform:translate(-50%, -50%) !important;z-index:10 !important;width:auto !important;max-width:200px !important;height:auto !important;}
+  .jv-logo img{height:58px !important;width:auto !important;margin:0 !important;max-width:100% !important;pointer-events:auto !important;}
+  .jv-header-actions{position:absolute !important;right:15px !important;top:35px !important;transform:translateY(-50%) !important;gap:1.2rem !important;z-index:10 !important;}
   .jv-header-actions .jv-header-btn:not(.jv-cart-btn){display:none !important;}
   .jv-cart-btn{flex-direction:row !important;font-size:16px !important;gap:0 !important;}
   .jv-cart-btn span:not(.jv-cart-count){display:none !important;}
   .jv-cart-btn i{font-size:22px !important;}
-  .jv-search{display:flex !important;width:100% !important;max-width:100% !important;margin:50px 0 0 0 !important;}
+  .jv-search{display:flex !important;width:100% !important;max-width:100% !important;margin:70px 0 0 0 !important;}
   .jv-search input{height:40px !important;padding:8px 50px 8px 14px !important;font-size:14px !important;}
   .jv-search button{height:calc(100% - 2px) !important;}
   .jv-mobile-toggle{display:block !important;}
