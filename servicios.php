@@ -11,7 +11,7 @@ $categorias_serv = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo 
 $filtro_cat = $_GET['categoria'] ?? '';
 
 $sql = "SELECT s.*, c.nombre AS cat_nombre, c.slug AS cat_slug FROM servicios s
-        LEFT JOIN categorias c ON s.categoria_id=c.id WHERE s.activo=1";
+        LEFT JOIN categorias c ON s.categoria_id=c.id WHERE s.activo=1 AND s.parent_id IS NULL";
 $params = [];
 if($filtro_cat){
   $sql .= " AND c.slug=?"; $params[]=$filtro_cat;

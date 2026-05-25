@@ -57,6 +57,11 @@ function getDB()
                     $pdo->exec("ALTER TABLE `servicios` ADD COLUMN `caracteristicas` JSON DEFAULT NULL");
                 }
                 
+                $q4 = $pdo->query("SHOW COLUMNS FROM `servicios` LIKE 'parent_id'");
+                if (!$q4->fetch()) {
+                    $pdo->exec("ALTER TABLE `servicios` ADD COLUMN `parent_id` INT DEFAULT NULL");
+                }
+                
                 // 3. Tabla marcas
                 $pdo->exec("CREATE TABLE IF NOT EXISTS `marcas` (
                     `id` INT AUTO_INCREMENT PRIMARY KEY,

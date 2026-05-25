@@ -33,6 +33,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'precio_desde'      => ($_POST['precio_desde'] !== '' ? (float)$_POST['precio_desde'] : null),
       'icono'             => trim($_POST['icono'] ?? 'fas fa-cog'),
       'caracteristicas'   => trim($_POST['caracteristicas'] ?? '[]'),
+      'parent_id'         => ($_POST['parent_id'] !== '' ? (int)$_POST['parent_id'] : null),
       'destacado'         => isset($_POST['destacado']) ? 1 : 0,
       'orden'             => (int)($_POST['orden'] ?? 0),
       'activo'            => isset($_POST['activo']) ? 1 : 0,
@@ -82,9 +83,18 @@ if(isset($_GET['edit'])){
 }
 $showForm = (isset($_GET['action']) && $_GET['action']==='new') || $editServ;
 
-$servicios  = $db->query("SELECT s.*, c.nombre AS cat_nombre FROM servicios s LEFT JOIN categorias c ON s.categoria_id=c.id ORDER BY s.orden,s.id")->fetchAll();
+$servicios  = $db->query("SELECT s.*, c.nombre AS cat_nombre, p.titulo AS padre_titulo FROM servicios s LEFT JOIN categorias c ON s.categoria_id=c.id LEFT JOIN servicios p ON s.parent_id=p.id ORDER BY s.orden,s.id")->fetchAll();
 $categorias = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('servicio','ambos') ORDER BY nombre")->fetchAll();
 $allCats    = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombre")->fetchAll();
+
+$parentQuery = "SELECT * FROM servicios WHERE parent_id IS NULL";
+$parentParams = [];
+if($editServ){
+  $parentQuery .= " AND id != ?"; $parentParams[]=$editServ['id'];
+}
+$parentQuery .= " ORDER BY titulo";
+$parentStmt = $db->prepare($parentQuery); $parentStmt->execute($parentParams);
+$parentServices = $parentStmt->fetchAll();
 ?>
 
 <?php if($showForm): ?>
@@ -119,6 +129,16 @@ $allCats    = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
       <div class="form-group">
         <label class="form-label">Precio Desde (opcional)</label>
         <input type="number" name="precio_desde" step="0.01" min="0" class="form-control" value="<?= $editServ['precio_desde']??'' ?>" placeholder="Dejar vacío si es por cotización">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Servicio Padre (Para sub-servicios)</label>
+        <select name="parent_id" class="form-control">
+          <option value="">Ninguno (Es un servicio principal)</option>
+          <?php foreach($parentServices as $p): ?>
+          <option value="<?=$p['id']?>" <?= ($editServ['parent_id']??'')==$p['id']?'selected':'' ?>><?= sanitize($p['titulo']) ?></option>
+          <?php endforeach; ?>
+        </select>
+        <small style="color:#94a3b8;font-size:11px">Asócialo a otro servicio si es un sub-servicio independiente.</small>
       </div>
       <div class="form-group full">
         <label class="form-label">Descripción Corta</label>
@@ -198,6 +218,11 @@ $allCats    = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY nombr
       <td>
         <strong><?= sanitize(truncateText($s['titulo'],40)) ?></strong>
         <?php if($s['destacado']): ?><span class="badge badge-info" style="margin-left:4px">Destacado</span><?php endif; ?>
+        <?php if($s['padre_titulo']): ?>
+          <div style="font-size:11px;color:#64748b;margin-top:2px;">
+            <i class="fas fa-level-up-alt fa-rotate-90" style="margin-right:4px"></i> Sub-servicio de: <strong><?= sanitize($s['padre_titulo']) ?></strong>
+          </div>
+        <?php endif; ?>
       </td>
       <td><?= sanitize($s['cat_nombre']??'—') ?></td>
       <td><?= $s['precio_desde'] ? formatPrice($s['precio_desde']) : '<span style="color:#94a3b8">Por cotización</span>' ?></td>
