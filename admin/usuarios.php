@@ -101,7 +101,7 @@ if ($action === 'edit' && isset($_GET['id'])) {
 // Listar usuarios (excluyendo clientes)
 $usuarios = $db->query("SELECT * FROM usuarios WHERE rol IN ('admin', 'staff') ORDER BY rol, nombre")->fetchAll();
 $flash = getFlash();
-<?php require_once __DIR__ . '/includes/header.php';
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="adm-card">

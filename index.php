@@ -11,6 +11,12 @@ $db = getDB();
 // Banners para el hero
 $banners = $db->query("SELECT * FROM banners WHERE activo=1 AND posicion='principal' ORDER BY orden LIMIT 5")->fetchAll();
 
+// Marcas
+$marcas = [];
+try {
+    $marcas = $db->query("SELECT * FROM marcas WHERE activo=1 ORDER BY orden")->fetchAll();
+} catch (Exception $e) {}
+
 // Productos destacados
 $destacados = $db->query("
   SELECT p.*, c.nombre AS cat_nombre, c.slug AS cat_slug
@@ -126,6 +132,15 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
 </section>
 
 <!-- BRANDS -->
+<?php if(!empty($marcas)): ?>
+<div class="jv-brands">
+  <div class="jv-brands-track" id="brandsTrack">
+    <?php for($r=0;$r<2;$r++): foreach($marcas as $m): ?>
+    <img src="<?= BASE_URL . $m['imagen_url'] ?>" alt="<?= sanitize($m['nombre']) ?>">
+    <?php endforeach; endfor; ?>
+  </div>
+</div>
+<?php else: ?>
 <div class="jv-brands">
   <div class="jv-brands-track" id="brandsTrack">
     <?php for($r=0;$r<2;$r++): ?>
@@ -138,6 +153,7 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
     <?php endfor; ?>
   </div>
 </div>
+<?php endif; ?>
 
 <!-- STATS -->
 <div style="background:var(--navy);padding:20px 0;">

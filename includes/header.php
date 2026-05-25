@@ -23,6 +23,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvm.png">
 <title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?><?= sanitize($siteName) ?></title>
 <meta name="description" content="<?= isset($pageDescription) ? sanitize($pageDescription) : getSiteConfig('site_description', SITE_DESCRIPTION) ?>">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">

@@ -28,6 +28,7 @@ $flash = getFlash();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvm.png">
 <title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?>Admin - JVM Store</title>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -70,6 +71,9 @@ $flash = getFlash();
     </a>
     <a href="<?= BASE_URL ?>admin/banners.php" class="<?= $currentFile==='banners.php'?'active':'' ?>">
       <i class="fas fa-images"></i> Banners
+    </a>
+    <a href="<?= BASE_URL ?>admin/marcas.php" class="<?= $currentFile==='marcas.php'?'active':'' ?>">
+      <i class="fas fa-copyright"></i> Marcas
     </a>
 
     <div class="adm-nav-label">Usuarios</div>
