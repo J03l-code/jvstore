@@ -46,8 +46,8 @@ $ofertas = $db->query("
 
 // Categorías de productos
 $productCats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('producto','ambos') ORDER BY orden,id LIMIT 12")->fetchAll();
-// Categorías de servicios
-$serviceCats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('servicio','ambos') ORDER BY orden,id LIMIT 12")->fetchAll();
+// Servicios principales (que actúan como categorías)
+$mainServices = $db->query("SELECT * FROM servicios WHERE parent_id IS NULL AND activo=1 ORDER BY orden,id LIMIT 12")->fetchAll();
 
 // Servicios destacados
 $servicios = $db->query("
@@ -200,19 +200,19 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
 </section>
 <?php endif; ?>
 
-<!-- CATEGORÍAS DE SERVICIOS -->
-<?php if(!empty($serviceCats)): ?>
+<!-- SERVICIOS -->
+<?php if(!empty($mainServices)): ?>
 <section class="jv-section bg-white" style="padding-top: 20px;">
 <div class="container">
   <div class="jv-section-header" style="border-top: 1px solid #f1f5f9; padding-top: 30px;">
-    <h2>Categorías de Servicios</h2>
-    <a href="<?= BASE_URL ?>servicios.php">Ver Servicios <i class="fas fa-arrow-right"></i></a>
+    <h2>Servicios</h2>
+    <a href="<?= BASE_URL ?>servicios.php">Ver Todos <i class="fas fa-arrow-right"></i></a>
   </div>
   <div class="jv-cats-grid">
-    <?php foreach($serviceCats as $c): ?>
-    <a href="<?= BASE_URL ?>servicios.php?categoria=<?= $c['slug'] ?>" class="jv-cat-card">
-      <div class="jv-cat-icon" style="background:<?= sanitize($c['color'] ?? '#1B2A4A') ?>"><i class="<?= sanitize($c['icono']) ?>"></i></div>
-      <h3><?= sanitize($c['nombre']) ?></h3>
+    <?php foreach($mainServices as $s): ?>
+    <a href="<?= BASE_URL ?>servicio.php?id=<?= $s['id'] ?>" class="jv-cat-card">
+      <div class="jv-cat-icon" style="background:#1B2A4A"><i class="<?= sanitize($s['icono'] ?? 'fas fa-cog') ?>"></i></div>
+      <h3><?= sanitize($s['titulo']) ?></h3>
     </a>
     <?php endforeach; ?>
   </div>
