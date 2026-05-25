@@ -13,7 +13,7 @@ $flash        = getFlash();
 
 // Categorías para nav
 $db = getDB();
-$navCats = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY orden,id")->fetchAll();
+$navCats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('producto','ambos') ORDER BY orden,id")->fetchAll();
 $siteName = getSiteConfig('site_name', SITE_NAME);
 $whatsapp = getSiteConfig('whatsapp', WHATSAPP_NUMBER);
 $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100');
