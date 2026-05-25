@@ -44,8 +44,10 @@ $ofertas = $db->query("
   ORDER BY RAND() LIMIT 2
 ")->fetchAll();
 
-// Categorías (todas las activas, sin filtro de tipo)
-$cats = $db->query("SELECT * FROM categorias WHERE activo=1 ORDER BY orden,id LIMIT 12")->fetchAll();
+// Categorías de productos
+$productCats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('producto','ambos') ORDER BY orden,id LIMIT 12")->fetchAll();
+// Categorías de servicios
+$serviceCats = $db->query("SELECT * FROM categorias WHERE activo=1 AND tipo IN ('servicio','ambos') ORDER BY orden,id LIMIT 12")->fetchAll();
 
 // Servicios destacados
 $servicios = $db->query("
@@ -177,17 +179,37 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
   </div>
 </div>
 
-<!-- CATEGORÍAS -->
-<?php if(!empty($cats)): ?>
-<section class="jv-section bg-white">
+<!-- CATEGORÍAS DE PRODUCTOS -->
+<?php if(!empty($productCats)): ?>
+<section class="jv-section bg-white" style="padding-bottom: 20px;">
 <div class="container">
   <div class="jv-section-header">
-    <h2>Categorías</h2>
-    <a href="<?= BASE_URL ?>tienda.php">Ver todo <i class="fas fa-arrow-right"></i></a>
+    <h2>Categorías de Productos</h2>
+    <a href="<?= BASE_URL ?>tienda.php">Ver Tienda <i class="fas fa-arrow-right"></i></a>
   </div>
   <div class="jv-cats-grid">
-    <?php foreach($cats as $c): ?>
+    <?php foreach($productCats as $c): ?>
     <a href="<?= BASE_URL ?>tienda.php?categoria=<?= $c['slug'] ?>" class="jv-cat-card">
+      <div class="jv-cat-icon" style="background:<?= sanitize($c['color'] ?? '#1B2A4A') ?>"><i class="<?= sanitize($c['icono']) ?>"></i></div>
+      <h3><?= sanitize($c['nombre']) ?></h3>
+    </a>
+    <?php endforeach; ?>
+  </div>
+</div>
+</section>
+<?php endif; ?>
+
+<!-- CATEGORÍAS DE SERVICIOS -->
+<?php if(!empty($serviceCats)): ?>
+<section class="jv-section bg-white" style="padding-top: 20px;">
+<div class="container">
+  <div class="jv-section-header" style="border-top: 1px solid #f1f5f9; padding-top: 30px;">
+    <h2>Categorías de Servicios</h2>
+    <a href="<?= BASE_URL ?>servicios.php">Ver Servicios <i class="fas fa-arrow-right"></i></a>
+  </div>
+  <div class="jv-cats-grid">
+    <?php foreach($serviceCats as $c): ?>
+    <a href="<?= BASE_URL ?>servicios.php?categoria=<?= $c['slug'] ?>" class="jv-cat-card">
       <div class="jv-cat-icon" style="background:<?= sanitize($c['color'] ?? '#1B2A4A') ?>"><i class="<?= sanitize($c['icono']) ?>"></i></div>
       <h3><?= sanitize($c['nombre']) ?></h3>
     </a>
@@ -223,6 +245,11 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
         <a href="<?= BASE_URL ?>producto.php?id=<?= $p['id'] ?>">
           <h3 class="jv-card-title"><?= sanitize($p['nombre']) ?></h3>
         </a>
+        <?php if(!empty($p['descripcion_corta'])): ?>
+          <p style="font-size:12.3px; color:#64748b; line-height:1.4; margin: 4px 0 8px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; overflow:hidden; font-weight:500;">
+            <?= sanitize($p['descripcion_corta']) ?>
+          </p>
+        <?php endif; ?>
         <div class="jv-card-footer">
           <div class="jv-price-wrap">
             <span class="jv-price"><?= formatPrice($p['precio_oferta']??$p['precio']) ?></span>
@@ -316,6 +343,11 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
       <div class="jv-card-body">
         <div class="jv-card-cat"><?= sanitize($p['cat_nombre']??'') ?></div>
         <a href="<?= BASE_URL ?>producto.php?id=<?= $p['id'] ?>"><h3 class="jv-card-title"><?= sanitize($p['nombre']) ?></h3></a>
+        <?php if(!empty($p['descripcion_corta'])): ?>
+          <p style="font-size:12.3px; color:#64748b; line-height:1.4; margin: 4px 0 8px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; overflow:hidden; font-weight:500;">
+            <?= sanitize($p['descripcion_corta']) ?>
+          </p>
+        <?php endif; ?>
         <div class="jv-card-footer">
           <span class="jv-price"><?= formatPrice($p['precio_oferta']??$p['precio']) ?></span>
           <?php if($p['stock']>0): ?>

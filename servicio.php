@@ -101,11 +101,46 @@ require_once 'includes/header.php';
                 <div class="product-gallery">
                     <div class="main-image-container" style="position:relative; width:100%; display:flex; align-items:center; justify-content:center; background:#f8fafc; overflow:hidden; border-radius:12px; border:1px solid #e2e8f0; min-height: 400px;">
                         <?php if ($serv['imagen_url']): ?>
-                            <img src="<?= getProductImage($serv['imagen_url']) ?>" alt="<?= sanitize($serv['titulo']) ?>" id="mainImage" class="img-fluid" style="width:100%; height:100%; object-fit:cover;">
+                            <img src="<?= getProductImage($serv['imagen_url']) ?>" alt="<?= sanitize($serv['titulo']) ?>" id="mainImage" class="img-fluid" style="width:100%; height:100%; object-fit:cover; transition: opacity 0.15s ease;">
+                            <div id="mainVideoContainer" style="display:none; width:100%; height:100%; background:#000; align-items:center; justify-content:center; position:absolute; top:0; left:0;"></div>
                         <?php else: ?>
                             <i class="<?= sanitize($serv['icono']) ?>" style="font-size: 8rem; color: var(--gold); opacity: 0.8;"></i>
                         <?php endif; ?>
                     </div>
+                    
+                    <?php
+                    $galItems = [];
+                    if (!empty($serv['galeria'])) {
+                        $galItems = json_decode($serv['galeria'], true) ?: [];
+                    }
+                    ?>
+                    <?php if (!empty($galItems)): ?>
+                        <div class="thumbnails" style="display:flex; gap:10px; margin-top:15px; overflow-x:auto; padding-bottom:5px;">
+                            <!-- Miniatura Principal -->
+                            <?php if ($serv['imagen_url']): ?>
+                            <div class="thumb active" onclick="showMedia('image', '<?= getProductImage($serv['imagen_url']) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid #1B2A4A; overflow:hidden; cursor:pointer; flex-shrink:0;">
+                                <img src="<?= getProductImage($serv['imagen_url']) ?>" style="width:100%; height:100%; object-fit:cover;">
+                            </div>
+                            <?php endif; ?>
+                            
+                            <!-- Miniaturas Galería JSON -->
+                            <?php foreach ($galItems as $index => $item):
+                                $isVid = ($item['tipo'] ?? 'imagen') === 'video';
+                                $itemUrl = $item['url'];
+                                $fullUrl = (strpos($itemUrl, 'http') === 0) ? $itemUrl : BASE_URL . $itemUrl;
+                            ?>
+                                <div class="thumb" onclick="showMedia('<?= $isVid ? 'video' : 'image' ?>', '<?= sanitize($fullUrl) ?>', this)" style="width:70px; height:70px; border-radius:8px; border:2px solid transparent; overflow:hidden; cursor:pointer; flex-shrink:0; position:relative; background:#f1f5f9;">
+                                    <?php if ($isVid): ?>
+                                        <div style="width:100%; height:100%; display:flex; align-items:center; justify-content:center; background:#0f172a; color:#fff;">
+                                            <i class="fas fa-play-circle" style="font-size:24px; color:#0ea5e9;"></i>
+                                        </div>
+                                    <?php else: ?>
+                                        <img src="<?= sanitize($fullUrl) ?>" style="width:100%; height:100%; object-fit:cover;">
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <div class="product-info">
@@ -197,5 +232,44 @@ require_once 'includes/header.php';
         <?php endif; ?>
     </div>
 </section>
+
+<script>
+    function showMedia(type, url, el) {
+        // Quitar clase activa de todas las miniaturas
+        document.querySelectorAll('.thumbnails .thumb').forEach(t => {
+            t.classList.remove('active');
+            t.style.borderColor = 'transparent';
+        });
+        el.classList.add('active');
+        el.style.borderColor = '#1B2A4A';
+        
+        const mainImg = document.getElementById('mainImage');
+        const mainVidCont = document.getElementById('mainVideoContainer');
+        
+        if (type === 'video') {
+            mainImg.style.display = 'none';
+            mainVidCont.style.display = 'flex';
+            
+            // Determinar si es un link de YouTube
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                let videoId = '';
+                if (url.includes('youtube.com/watch')) {
+                    const urlParams = new URLSearchParams(new URL(url).search);
+                    videoId = urlParams.get('v');
+                } else if (url.includes('youtu.be/')) {
+                    videoId = url.split('/').pop();
+                }
+                mainVidCont.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" style="width:100%; height:100%; border:none;" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+            } else {
+                // Video local
+                mainVidCont.innerHTML = `<video src="${url}" controls autoplay style="max-width:100%; max-height:100%;"></video>`;
+            }
+        } else {
+            mainVidCont.style.display = 'none';
+            mainImg.style.display = 'block';
+            mainImg.src = url;
+        }
+    }
+</script>
 
 <?php require_once 'includes/footer.php'; ?>

@@ -22,8 +22,60 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
     return null;
   }
 
+  function uploadServiceGalleryItems($files){
+    $items = [];
+    if(!isset($files['name']) || !is_array($files['name'])) return $items;
+    $dir = __DIR__ . '/../uploads/servicios/';
+    if(!is_dir($dir)) mkdir($dir, 0755, true);
+    foreach($files['name'] as $i => $name){
+      if($files['error'][$i] !== UPLOAD_ERR_OK) continue;
+      $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+      $isImg = in_array($ext,['jpg','jpeg','png','gif','webp']);
+      $isVid = in_array($ext,['mp4','webm','ogg','mov','avi']);
+      if(!$isImg && !$isVid) continue;
+      $newName = uniqid('gal_').'.'.$ext;
+      if(move_uploaded_file($files['tmp_name'][$i], $dir.$newName)){
+        $items[] = [
+          'tipo' => $isVid ? 'video' : 'imagen',
+          'url' => 'uploads/servicios/'.$newName
+        ];
+      }
+    }
+    return $items;
+  }
+
   if($action === 'save'){
     $id = (int)($_POST['id'] ?? 0);
+    
+    // Procesar galería de fotos y videos
+    $galeriaItems = [];
+    $existentesUrls = $_POST['galeria_existente_url'] ?? [];
+    $existentesTipos = $_POST['galeria_existente_tipo'] ?? [];
+    foreach ($existentesUrls as $idx => $url) {
+        $url = trim($url);
+        if ($url !== '') {
+            $galeriaItems[] = [
+                'tipo' => $existentesTipos[$idx] ?? 'imagen',
+                'url'  => $url
+            ];
+        }
+    }
+    if (!empty($_FILES['galeria_archivos'])) {
+        $nuevosSubidos = uploadServiceGalleryItems($_FILES['galeria_archivos']);
+        $galeriaItems = array_merge($galeriaItems, $nuevosSubidos);
+    }
+    $videosExternos = $_POST['galeria_videos_externos'] ?? [];
+    foreach ($videosExternos as $vidUrl) {
+        $vidUrl = trim($vidUrl);
+        if ($vidUrl !== '') {
+            $galeriaItems[] = [
+                'tipo' => 'video',
+                'url'  => $vidUrl
+            ];
+        }
+    }
+    $galeriaJson = !empty($galeriaItems) ? json_encode($galeriaItems, JSON_UNESCAPED_UNICODE) : null;
+
     $data = [
       'categoria_id'      => ($_POST['categoria_id'] ?: null),
       'titulo'            => trim($_POST['titulo'] ?? ''),
@@ -37,6 +89,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST'){
       'destacado'         => isset($_POST['destacado']) ? 1 : 0,
       'orden'             => (int)($_POST['orden'] ?? 0),
       'activo'            => isset($_POST['activo']) ? 1 : 0,
+      'galeria'           => $galeriaJson,
     ];
     if(!$data['titulo']){ setFlash('danger','El título es obligatorio'); redirect(BASE_URL.'admin/servicios.php'); }
 
@@ -168,6 +221,69 @@ $parentServices = $parentStmt->fetchAll();
         <img id="prevServImg" class="img-preview">
         <?php endif; ?>
       </div>
+      <div class="form-group full" style="border-top:1px solid #f1f5f9;padding-top:15px;margin-top:15px">
+        <label class="form-label" style="color:var(--navy);font-weight:700;margin-bottom:12px"><i class="fas fa-images"></i> Galería de Imágenes y Videos Adicionales</label>
+        
+        <!-- Grid de Items Existentes -->
+        <div id="galeria-preview-grid" style="display:flex;flex-wrap:wrap;gap:12px;margin-bottom:15px">
+          <?php
+          $galItems = [];
+          if ($editServ && !empty($editServ['galeria'])) {
+              $galItems = json_decode($editServ['galeria'], true) ?: [];
+          }
+          foreach ($galItems as $gi => $item):
+              $isVid = ($item['tipo'] ?? 'imagen') === 'video';
+              $thumbUrl = $item['url'];
+              $displayUrl = (strpos($thumbUrl, 'http') === 0) ? $thumbUrl : BASE_URL . $thumbUrl;
+          ?>
+          <div class="galeria-item-card" style="position:relative;width:100px;height:100px;border-radius:8px;border:1px solid #cbd5e1;overflow:hidden;background:#f1f5f9">
+            <input type="hidden" name="galeria_existente_url[]" value="<?= sanitize($item['url']) ?>">
+            <input type="hidden" name="galeria_existente_tipo[]" value="<?= sanitize($item['tipo'] ?? 'imagen') ?>">
+            
+            <?php if ($isVid): ?>
+              <div style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;background:#0f172a;color:#fff">
+                <i class="fas fa-video" style="font-size:24px;color:#0ea5e9"></i>
+              </div>
+            <?php else: ?>
+              <img src="<?= sanitize($displayUrl) ?>" style="width:100%;height:100%;object-fit:cover">
+            <?php endif; ?>
+            
+            <button type="button" onclick="this.closest('.galeria-item-card').remove()" style="position:absolute;top:4px;right:4px;width:24px;height:24px;border-radius:50%;background:rgba(239,68,68,0.9);color:#fff;border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px" title="Eliminar de la galería">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+          <?php endforeach; ?>
+        </div>
+        
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px">
+          <div>
+            <label class="form-label" style="font-size:12px;color:#64748b">Subir fotos o videos locales (Múltiples)</label>
+            <input type="file" name="galeria_archivos[]" class="form-control" accept="image/*,video/*" multiple>
+            <small style="color:#94a3b8;font-size:11px">Formatos: JPG, PNG, WEBP, MP4, WEBM</small>
+          </div>
+          <div>
+            <label class="form-label" style="font-size:12px;color:#64748b;display:flex;justify-content:space-between;align-items:center">
+              <span>Enlaces de Video Externos (ej: YouTube)</span>
+              <button type="button" onclick="addExternalVideoRow()" class="btn btn-sm btn-gold" style="padding:2px 8px;font-size:10px"><i class="fas fa-plus"></i></button>
+            </label>
+            <div id="videos-externos-container" style="display:flex;flex-direction:column;gap:6px">
+              <input type="text" name="galeria_videos_externos[]" class="form-control" placeholder="https://www.youtube.com/watch?v=..." style="font-size:12px">
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+      function addExternalVideoRow() {
+          const container = document.getElementById('videos-externos-container');
+          const input = document.createElement('input');
+          input.type = 'text';
+          input.name = 'galeria_videos_externos[]';
+          input.className = 'form-control';
+          input.placeholder = 'https://www.youtube.com/watch?v=...';
+          input.style.cssText = 'font-size:12px;margin-top:4px';
+          container.appendChild(input);
+      }
+      </script>
       <div class="form-group">
         <label class="form-label">Orden de aparición</label>
         <input type="number" name="orden" class="form-control" value="<?= $editServ['orden']??0 ?>" min="0">

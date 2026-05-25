@@ -274,6 +274,11 @@ $totalProductos = count($productos);
                                             <?= sanitize($prod['nombre']) ?>
                                         </h3>
                                     </a>
+                                    <?php if(!empty($prod['descripcion_corta'])): ?>
+                                        <p style="font-size:12px; color:var(--navy-mid); line-height:1.4; margin: 4px 0 8px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical; overflow:hidden;">
+                                            <?= sanitize($prod['descripcion_corta']) ?>
+                                        </p>
+                                    <?php endif; ?>
                                     <div class="card-oem">SKU:
                                         <?= sanitize($prod['sku'] ?? $prod['oem_code']) ?>
                                     </div>
