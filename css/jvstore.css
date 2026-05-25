@@ -233,9 +233,18 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
   .jv-footer-main{grid-template-columns:1fr 1fr;}
 }
 @media(max-width:768px){
-  .jv-logo img{height:auto;width:180px;margin:0;max-width:100% !important;}
-  .jv-search{display:none;}
-  .jv-mobile-toggle{display:block;}
+  .jv-header .inner{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px;padding:8px 0;}
+  .jv-logo{order:1;width:auto !important;max-width:160px !important;height:auto !important;}
+  .jv-logo img{height:45px !important;width:auto !important;margin:0 !important;max-width:100% !important;pointer-events:auto !important;}
+  .jv-header-actions{order:2;gap:1.2rem !important;}
+  .jv-header-actions .jv-header-btn:not(.jv-cart-btn){display:none !important;}
+  .jv-cart-btn{flex-direction:row !important;font-size:16px !important;gap:0 !important;}
+  .jv-cart-btn span:not(.jv-cart-count){display:none !important;}
+  .jv-cart-btn i{font-size:22px !important;}
+  .jv-search{display:flex !important;order:3;width:100% !important;max-width:100% !important;margin:5px 0 0 0 !important;}
+  .jv-search input{height:40px !important;padding:8px 50px 8px 14px !important;font-size:14px !important;}
+  .jv-search button{height:calc(100% - 2px) !important;}
+  .jv-mobile-toggle{display:block !important;}
   .jv-topbar .inner>:not(.topbar-promo){display:none;}
   .jv-products-grid{grid-template-columns:repeat(2,1fr);}
   .jv-cats-grid{grid-template-columns:repeat(3,1fr);}
@@ -244,6 +253,10 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
   .jv-footer-main{grid-template-columns:1fr;}
   .jv-footer-bottom{flex-direction:column;gap:8px;text-align:center;}
   .jv-trust-grid{grid-template-columns:1fr 1fr;}
+  .jv-catnav{overflow-x:auto !important;white-space:nowrap !important;-webkit-overflow-scrolling:touch;padding:6px 0 !important;}
+  .jv-catnav::-webkit-scrollbar{display:none !important;}
+  .jv-catnav .inner{display:flex !important;flex-wrap:nowrap !important;gap:8px !important;width:max-content !important;padding:0 15px !important;}
+  .jv-catnav a{padding:6px 12px !important;font-size:11px !important;white-space:nowrap !important;border-radius:4px !important;}
 }
 @media(max-width:480px){
   .jv-products-grid{grid-template-columns:1fr 1fr;}
