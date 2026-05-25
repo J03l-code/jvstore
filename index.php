@@ -60,6 +60,7 @@ $servicios = $db->query("
 
 $totalProductos = $db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn();
 $totalCategorias = $db->query("SELECT COUNT(*) FROM categorias WHERE activo=1")->fetchColumn();
+$testimonios = $db->query("SELECT * FROM testimonios WHERE activo=1 ORDER BY orden, id LIMIT 6")->fetchAll();
 $whatsapp = getSiteConfig('whatsapp', WHATSAPP_NUMBER);
 $siteName = getSiteConfig('site_name', SITE_NAME);
 ?>
@@ -370,21 +371,47 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
     <div><span class="section-tag">Opiniones</span><h2>Lo que dicen nuestros clientes</h2></div>
   </div>
   <div class="jv-testimonials-grid">
-    <div class="jv-testi">
-      <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-      <p>"Excelente servicio, recibí mi pedido en tiempo récord y la calidad superó mis expectativas. 100% recomendado."</p>
-      <div class="jv-testi-author">Carlos M.</div><div class="jv-testi-role">Cliente verificado</div>
-    </div>
-    <div class="jv-testi">
-      <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
-      <p>"Contraté el servicio de consultoría y fue muy profesional. Me ayudaron a mejorar mi negocio significativamente."</p>
-      <div class="jv-testi-author">María F.</div><div class="jv-testi-role">Empresaria</div>
-    </div>
-    <div class="jv-testi">
-      <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
-      <p>"Los productos son de primera calidad y el soporte al cliente es excelente. Ya hice mi tercera compra."</p>
-      <div class="jv-testi-author">Roberto L.</div><div class="jv-testi-role">Cliente frecuente</div>
-    </div>
+    <?php if(!empty($testimonios)): ?>
+      <?php foreach($testimonios as $t): ?>
+      <div class="jv-testi">
+        <div class="jv-testi-stars" style="color:#d4af37; margin-bottom:10px;">
+          <?php for($i=1; $i<=5; $i++): ?>
+            <i class="<?= $i <= $t['estrellas'] ? 'fas fa-star' : 'far fa-star' ?>"></i>
+          <?php endfor; ?>
+        </div>
+        <p style="font-style:italic; color:#334155; line-height:1.6;">"<?= sanitize($t['comentario']) ?>"</p>
+        <div style="display:flex; align-items:center; gap:12px; margin-top:20px; border-top:1px solid #f1f5f9; padding-top:12px;">
+          <?php if($t['imagen_url']): ?>
+            <img src="<?= BASE_URL . $t['imagen_url'] ?>" style="width:42px; height:42px; border-radius:50%; object-fit:cover; border:2px solid #e2e8f0;">
+          <?php else: ?>
+            <div style="width:42px; height:42px; border-radius:50%; background:#e2e8f0; display:flex; align-items:center; justify-content:center; color:#94a3b8; border:2px solid #e2e8f0;"><i class="fas fa-user"></i></div>
+          <?php endif; ?>
+          <div>
+            <div class="jv-testi-author" style="margin:0; font-weight:700; color:var(--navy); font-size:14px;"><?= sanitize($t['nombre_cliente']) ?></div>
+            <?php if($t['cargo_empresa']): ?>
+              <div class="jv-testi-role" style="margin:0; font-size:11px; color:#64748b; font-weight:500;"><?= sanitize($t['cargo_empresa']) ?></div>
+            <?php endif; ?>
+          </div>
+        </div>
+      </div>
+      <?php endforeach; ?>
+    <?php else: ?>
+      <div class="jv-testi">
+        <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Excelente servicio, recibí mi pedido en tiempo récord y la calidad superó mis expectativas. 100% recomendado."</p>
+        <div class="jv-testi-author">Carlos M.</div><div class="jv-testi-role">Cliente verificado</div>
+      </div>
+      <div class="jv-testi">
+        <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+        <p>"Contraté el servicio de consultoría y fue muy profesional. Me ayudaron a mejorar mi negocio significativamente."</p>
+        <div class="jv-testi-author">María F.</div><div class="jv-testi-role">Empresaria</div>
+      </div>
+      <div class="jv-testi">
+        <div class="jv-testi-stars"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+        <p>"Los productos son de primera calidad y el soporte al cliente es excelente. Ya hice mi tercera compra."</p>
+        <div class="jv-testi-author">Roberto L.</div><div class="jv-testi-role">Cliente frecuente</div>
+      </div>
+    <?php endif; ?>
   </div>
 </div>
 </section>

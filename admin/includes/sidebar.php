@@ -20,6 +20,9 @@
         <a href="<?= BASE_URL ?>admin/clientes.php" class="<?= $currentPage === 'clientes.php' ? 'active' : '' ?>">
             <i class="fas fa-users"></i> Clientes
         </a>
+        <a href="<?= BASE_URL ?>admin/opiniones.php" class="<?= $currentPage === 'opiniones.php' ? 'active' : '' ?>">
+            <i class="fas fa-comment-dots"></i> Opiniones
+        </a>
 
         <?php if (isAdmin()): ?>
             <a href="<?= BASE_URL ?>admin/usuarios.php" class="<?= $currentPage === 'usuarios.php' ? 'active' : '' ?>">

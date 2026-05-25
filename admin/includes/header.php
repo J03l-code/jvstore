@@ -75,6 +75,9 @@ $flash = getFlash();
     <a href="<?= BASE_URL ?>admin/marcas.php" class="<?= $currentFile==='marcas.php'?'active':'' ?>">
       <i class="fas fa-copyright"></i> Marcas
     </a>
+    <a href="<?= BASE_URL ?>admin/opiniones.php" class="<?= $currentFile==='opiniones.php'?'active':'' ?>">
+      <i class="fas fa-comment-dots"></i> Opiniones
+    </a>
 
     <div class="adm-nav-label">Usuarios</div>
     <a href="<?= BASE_URL ?>admin/clientes.php" class="<?= $currentFile==='clientes.php'?'active':'' ?>">
