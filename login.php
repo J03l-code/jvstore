@@ -97,7 +97,7 @@ require_once 'includes/header.php';
     border-radius: 50%;
     bottom: -60px; left: -60px;
 }
-.login-visual-logo { height: 120px; margin-top: -20px; margin-bottom: 1rem; filter: brightness(10); }
+.login-visual-logo { height: 150px; margin-top: -40px; margin-bottom: 1rem; }
 .login-visual h2 {
     color: #fff;
     font-size: 1.6rem;
