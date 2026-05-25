@@ -284,58 +284,11 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
   display: block !important;
 }
 
-/* Seccion de todos los productos: nombres en color blanco y tarjetas oscuras premium */
-.card.product-card,
-.jv-card {
-  background: var(--navy-mid) !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2) !important;
-}
-
-.card.product-card .card-body,
-.jv-card-body {
-  background: var(--navy-mid) !important;
-}
-
-.card.product-card .card-title,
-.jv-card-title {
-  color: #ffffff !important;
-}
-
-.card.product-card .card-title a,
-.jv-card-title a,
-.jv-card-body a {
-  color: #ffffff !important;
-}
-
-.card.product-card .card-category,
-.jv-card-cat {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.card.product-card .price,
-.jv-price {
-  color: var(--gold) !important;
-}
-
-.card.product-card .price-old,
-.jv-price-old {
-  color: rgba(255, 255, 255, 0.4) !important;
-}
-
-.card.product-card .card-footer,
-.jv-card-footer {
-  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
-}
-
-.card.product-card .card-oem {
-  color: rgba(255, 255, 255, 0.5) !important;
-}
-
 /* Asegurar que el título de la página en la cabecera (page-header) sea blanco */
 .page-header h1,
 .page-header .container h1 {
   color: #ffffff !important;
 }
+
 
 
