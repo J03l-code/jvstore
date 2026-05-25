@@ -52,6 +52,11 @@ function getDB()
                     KEY `fk_serv_cat` (`categoria_id`)
                 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;");
                 
+                $q3 = $pdo->query("SHOW COLUMNS FROM `servicios` LIKE 'caracteristicas'");
+                if (!$q3->fetch()) {
+                    $pdo->exec("ALTER TABLE `servicios` ADD COLUMN `caracteristicas` JSON DEFAULT NULL");
+                }
+                
                 // 3. Tabla marcas
                 $pdo->exec("CREATE TABLE IF NOT EXISTS `marcas` (
                     `id` INT AUTO_INCREMENT PRIMARY KEY,
