@@ -23,7 +23,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvm.png">
+<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvn.png">
 <title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?><?= sanitize($siteName) ?></title>
 <meta name="description" content="<?= isset($pageDescription) ? sanitize($pageDescription) : getSiteConfig('site_description', SITE_DESCRIPTION) ?>">
 <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
@@ -45,10 +45,10 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <header class="jv-header">
   <div class="container inner">
     <a href="<?= BASE_URL ?>" class="jv-logo">
-      <img src="<?= BASE_URL ?>img/logojvm.png" alt="<?= sanitize($siteName) ?>"
+      <img src="<?= BASE_URL ?>img/logojvn.png" alt="<?= sanitize($siteName) ?>"
            onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
       <div class="jv-logo-text" style="display:none">
-        JVM<span>Store</span>
+        JVN<span> store</span>
       </div>
     </a>
 
@@ -104,7 +104,7 @@ $heroBadge = getSiteConfig('hero_badge_texto', 'Envío Gratis en compras +$100')
 <!-- MOBILE NAV -->
 <div class="jv-mobile-nav" id="jvMobileNav">
   <div class="jv-mobile-nav-header">
-    <img src="<?= BASE_URL ?>img/logojvm.png" alt="JVM Store" style="height:40px">
+    <img src="<?= BASE_URL ?>img/logojvn.png" alt="JVN store" style="height:40px">
     <button class="jv-mobile-close" onclick="jvToggleNav()"><i class="fas fa-times"></i></button>
   </div>
   <form action="<?= BASE_URL ?>tienda.php" method="GET" style="margin-bottom:20px;display:flex;gap:8px;">

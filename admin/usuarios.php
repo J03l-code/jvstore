@@ -1,6 +1,6 @@
 <?php
 /**
- * JVSTORE - Admin: Gestión de Usuarios (Personal)
+ * JVN store - Admin: Gestión de Usuarios (Personal)
  * Solo accesible por Super Admins
  */
 $pageTitle = 'Usuarios del Sistema';
@@ -140,7 +140,7 @@ require_once __DIR__ . '/includes/header.php';
                                 <label>Email</label>
                                 <input type="email" name="email" required
                                     value="<?= sanitize($usuario['email'] ?? '') ?>"
-                                    placeholder="usuario@jvstore.com">
+                                    placeholder="usuario@jvnstore.com">
                             </div>
 
                             <div class="form-group">

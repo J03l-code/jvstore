@@ -1,13 +1,13 @@
 <?php
 /**
- * JVSTORE - Script de Migración / Reparación de BD
+ * JVN STORE - Script de Migración / Reparación de BD
  * Ejecutar UNA VEZ: https://tudominio.com/setup_db.php
  * ⚠️ ELIMINAR ESTE ARCHIVO después de ejecutar
  */
 
 // Seguridad básica
-if (!isset($_GET['confirm']) || $_GET['confirm'] !== 'jvstore2026') {
-    die('<h2>Agrega ?confirm=jvstore2026 a la URL para ejecutar</h2>');
+if (!isset($_GET['confirm']) || $_GET['confirm'] !== 'jvnstore2026') {
+    die('<h2>Agrega ?confirm=jvnstore2026 a la URL para ejecutar</h2>');
 }
 
 require_once __DIR__ . '/includes/config.php';
@@ -176,8 +176,8 @@ runSQL(
 
 // ── 4.5 Crear/actualizar Admin principal ─────────────────────────────────────
 try {
-    $adminEmail = 'admin@jvstore.com';
-    $adminPass  = password_hash('Jvstore2026!', PASSWORD_DEFAULT);
+    $adminEmail = 'admin@jvnstore.com';
+    $adminPass  = password_hash('Jvnstore2026!', PASSWORD_DEFAULT);
 
     $stmt = $db->prepare("SELECT id FROM usuarios WHERE email = ?");
     $stmt->execute([$adminEmail]);
@@ -209,14 +209,14 @@ try {
 }
 
 echo '<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
-<title>Setup JVStore</title>
+<title>Setup JVN store</title>
 <style>body{font-family:sans-serif;max-width:700px;margin:40px auto;padding:20px}
 h1{color:#1B2A4A}
 .ok{background:#f0fdf4;border-left:4px solid #22c55e;padding:8px 14px;margin:4px 0;border-radius:4px;font-size:14px}
 .err{background:#fef2f2;border-left:4px solid #ef4444;padding:8px 14px;margin:4px 0;border-radius:4px;font-size:14px}
 .done{background:#0ea5e9;color:#fff;padding:16px;border-radius:8px;margin-top:20px;text-align:center}
 </style></head><body>';
-echo '<h1>🛠 JVStore — Migración de BD</h1>';
+echo '<h1>🛠 JVN store — Migración de BD</h1>';
 foreach ($ok as $m)
     echo "<div class='ok'>$m</div>";
 foreach ($err as $m)

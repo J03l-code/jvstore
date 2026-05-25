@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS `configuracion` (
 
 -- Admin por defecto (password: Admin2026!)
 INSERT INTO `usuarios` (`nombre`, `email`, `password`, `rol`) VALUES
-('Administrador JV', 'admin@jvstore.com', '$2y$10$i7Y52Ca5wrssmdQczOLKeuKFvGz2itfzbq0FoVbRrd/qT7Yjpkxse', 'admin');
+('Administrador JVN', 'admin@jvnstore.com', '$2y$10$i7Y52Ca5wrssmdQczOLKeuKFvGz2itfzbq0FoVbRrd/qT7Yjpkxse', 'admin');
 
 -- Categorías de Productos
 INSERT INTO `categorias` (`nombre`, `slug`, `descripcion`, `icono`, `color`, `tipo`, `orden`, `activo`) VALUES
@@ -228,12 +228,12 @@ INSERT INTO `banners` (`titulo`, `subtitulo`, `imagen_url`, `enlace`, `boton_tex
 
 -- Configuración inicial del sitio
 INSERT INTO `configuracion` (`clave`, `valor`, `grupo`) VALUES
-('site_name',       'JV Ventas Online',              'general'),
+('site_name',       'JVN store',                     'general'),
 ('site_description','Tu tienda online de confianza - Productos y Servicios', 'general'),
 ('whatsapp',        '5930900000000',                 'contacto'),
-('email_contacto',  'contacto@jvstore.com',          'contacto'),
-('facebook',        'https://facebook.com/jvstore',  'redes'),
-('instagram',       'https://instagram.com/jvstore', 'redes'),
+('email_contacto',  'contacto@jvnstore.com',          'contacto'),
+('facebook',        'https://facebook.com/jvnstore',  'redes'),
+('instagram',       'https://instagram.com/jvnstore', 'redes'),
 ('tiktok',          '',                              'redes'),
 ('iva_porcentaje',  '15',                            'pagos'),
 ('costo_envio',     '5.00',                          'pagos'),

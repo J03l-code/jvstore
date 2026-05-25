@@ -8,7 +8,7 @@ require_once 'includes/header.php';
 
 $db = getDB();
 $whatsapp = getSiteConfig('whatsapp', WHATSAPP_NUMBER);
-$email_contacto = getSiteConfig('email_contacto', 'contacto@jvstore.com');
+$email_contacto = getSiteConfig('email_contacto', 'contacto@jvnstore.com');
 $siteName = getSiteConfig('site_name', SITE_NAME);
 
 $success = false;

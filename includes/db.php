@@ -113,6 +113,10 @@ function getDB()
                         ($catId, 'Instalación y Configuración', 'instalacion-configuracion', 'Servicio profesional de instalación, montaje y configuración de sistemas, hardware y software a domicilio o para empresas.', 'Instalación garantizada por expertos.', 50.00, 'fas fa-tools', 1, 2, 1)");
                     }
                 }
+                
+                // Actualizar nombre del sitio a JVN store
+                $pdo->exec("INSERT INTO `configuracion` (`clave`, `valor`) VALUES ('site_name', 'JVN store')
+                            ON DUPLICATE KEY UPDATE `valor` = 'JVN store'");
             } catch (Throwable $t) {
                 error_log("Auto-migración DB fallida: " . $t->getMessage());
             }

@@ -7,17 +7,17 @@ try {
     $hash = password_hash('Admin2026!', PASSWORD_DEFAULT);
     
     // Check if user exists first
-    $stmt = $db->query("SELECT id FROM usuarios WHERE email = 'admin@jvstore.com'");
+    $stmt = $db->query("SELECT id FROM usuarios WHERE email = 'admin@jvnstore.com'");
     if ($stmt->fetch()) {
-        $db->prepare("UPDATE usuarios SET password = ? WHERE email = 'admin@jvstore.com'")->execute([$hash]);
+        $db->prepare("UPDATE usuarios SET password = ? WHERE email = 'admin@jvnstore.com'")->execute([$hash]);
         echo "<h1>✅ Contraseña actualizada correctamente</h1>";
     } else {
         $db->prepare("INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)")
-           ->execute(['Administrador JV', 'admin@jvstore.com', $hash, 'admin']);
+           ->execute(['Administrador JVN', 'admin@jvnstore.com', $hash, 'admin']);
         echo "<h1>✅ Usuario creado y contraseña configurada correctamente</h1>";
     }
     
-    echo "<p>Email: admin@jvstore.com<br>Password: Admin2026!</p>";
+    echo "<p>Email: admin@jvnstore.com<br>Password: Admin2026!</p>";
     echo "<p><a href='".BASE_URL."login.php'>Ir al Login</a></p>";
     echo "<p style='color:red;'><strong>IMPORTANTE:</strong> Elimina este archivo (reset_admin.php) de tu servidor por seguridad.</p>";
 } catch (Exception $e) {

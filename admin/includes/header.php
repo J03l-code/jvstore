@@ -28,8 +28,8 @@ $flash = getFlash();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvm.png">
-<title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?>Admin - JVM Store</title>
+<link rel="shortcut icon" type="image/png" href="<?= BASE_URL ?>img/logojvn.png">
+<title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?>Admin - JVN store</title>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>admin/css/admin.css">
@@ -40,8 +40,8 @@ $flash = getFlash();
 <!-- SIDEBAR -->
 <aside class="adm-sidebar" id="admSidebar">
   <div class="adm-brand">
-    <img src="<?= BASE_URL ?>img/logojvm.png" alt="JVM Store" onerror="this.style.display='none'">
-    <span>JVM Store</span>
+    <img src="<?= BASE_URL ?>img/logojvn.png" alt="JVN store" onerror="this.style.display='none'">
+    <span>JVN store</span>
   </div>
   <nav class="adm-nav">
     <div class="adm-nav-label">Principal</div>
