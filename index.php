@@ -59,6 +59,7 @@ $servicios = $db->query("
 ")->fetchAll();
 
 $totalProductos = $db->query("SELECT COUNT(*) FROM productos WHERE activo=1")->fetchColumn();
+$totalCategorias = $db->query("SELECT COUNT(*) FROM categorias WHERE activo=1")->fetchColumn();
 $whatsapp = getSiteConfig('whatsapp', WHATSAPP_NUMBER);
 $siteName = getSiteConfig('site_name', SITE_NAME);
 ?>
@@ -165,7 +166,7 @@ $siteName = getSiteConfig('site_name', SITE_NAME);
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Productos</div>
     </div>
     <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1)">
-      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= count($cats) ?>+</div>
+      <div style="font-family:'Plus Jakarta Sans',system-ui,sans-serif;font-size:1.6rem;font-weight:900;color:var(--gold)"><?= $totalCategorias ?>+</div>
       <div style="font-size:12px;color:var(--silver);text-transform:uppercase;letter-spacing:1px">Categorías</div>
     </div>
     <div style="padding:10px;border-right:1px solid rgba(255,255,255,.1)">
