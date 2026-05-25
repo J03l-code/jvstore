@@ -303,7 +303,7 @@ require_once 'includes/header.php';
 
     <!-- Panel visual izquierdo -->
     <div class="login-visual">
-      <img src="<?= BASE_URL ?>img/logo jv.png" alt="JV Store" class="login-visual-logo"
+      <img src="<?= BASE_URL ?>img/logojvm.png" alt="JVM Store" class="login-visual-logo"
            onerror="this.style.display='none'">
       <h2>Tu tienda online de confianza</h2>
       <p>Inicia sesión para ver tus pedidos, gestionar tu carrito y acceder a tu cuenta personal.</p>

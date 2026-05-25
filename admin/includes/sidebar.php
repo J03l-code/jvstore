@@ -1,6 +1,6 @@
 <aside class="admin-sidebar">
     <div class="sidebar-logo">
-        <img src="<?= BASE_URL ?>img/logo jv.png?v=<?= time() ?>" alt="JVSTORE"
+        <img src="<?= BASE_URL ?>img/logojvm.png?v=<?= time() ?>" alt="JVM Store"
             class="sidebar-logo-img">
         <small>Panel de Administración</small>
     </div>

@@ -36,7 +36,7 @@ function cfg($key, $default='') { global $config; return htmlspecialchars($confi
     <div style="display:flex;flex-direction:column;gap:16px">
       <div class="form-group">
         <label class="form-label">Nombre del Sitio</label>
-        <input type="text" name="site_name" class="form-control" value="<?= cfg('site_name','JV Ventas Online') ?>">
+        <input type="text" name="site_name" class="form-control" value="<?= cfg('site_name','JVM Store') ?>">
       </div>
       <div class="form-group">
         <label class="form-label">Descripción / Meta SEO</label>

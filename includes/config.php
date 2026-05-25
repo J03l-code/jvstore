@@ -48,7 +48,7 @@ define('UPLOAD_URL', BASE_URL . 'uploads/');
 // ============================================================
 // CONSTANTES DEL SITIO (cargadas desde BD en runtime)
 // ============================================================
-define('SITE_NAME', 'JV Ventas Online');
+define('SITE_NAME', 'JVM Store');
 define('SITE_DESCRIPTION', 'Tu tienda online de confianza');
 define('WHATSAPP_NUMBER', '5930900000000');
 define('IVA_PORCENTAJE', 15);

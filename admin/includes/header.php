@@ -28,7 +28,7 @@ $flash = getFlash();
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?>Admin - JVstore</title>
+<title><?= isset($pageTitle) ? sanitize($pageTitle).' | ' : '' ?>Admin - JVM Store</title>
 <link rel="stylesheet" href="<?= BASE_URL ?>css/fonts.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="<?= BASE_URL ?>admin/css/admin.css">
@@ -39,8 +39,8 @@ $flash = getFlash();
 <!-- SIDEBAR -->
 <aside class="adm-sidebar" id="admSidebar">
   <div class="adm-brand">
-    <img src="<?= BASE_URL ?>img/logo jv.png" alt="JV" onerror="this.style.display='none'">
-    <span>JVstore</span>
+    <img src="<?= BASE_URL ?>img/logojvm.png" alt="JVM Store" onerror="this.style.display='none'">
+    <span>JVM Store</span>
   </div>
   <nav class="adm-nav">
     <div class="adm-nav-label">Principal</div>

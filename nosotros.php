@@ -1,13 +1,13 @@
 <?php
 $pageTitle = 'Nosotros';
-$pageDescription = 'Conoce la historia y misión de JVstore.';
+$pageDescription = 'Conoce la historia y misión de JVM Store.';
 require_once 'includes/header.php';
 ?>
 
 <section class="about-hero"
     style="background-image: linear-gradient(rgba(10, 25, 47, 0.7), rgba(10, 25, 47, 0.8)), url('<?= BASE_URL ?>img/backgrounds/nosotros.jpg');">
     <div class="container">
-        <h1>Sobre JVstore</h1>
+        <h1>Sobre JVM Store</h1>
         <p>Más de una década ofreciendo productos de consumo y servicios profesionales de calidad mundial a precios competitivos.
         </p>
     </div>

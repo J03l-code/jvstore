@@ -28,7 +28,7 @@ $tk       = getSiteConfig('tiktok', '');
   <div class="container">
     <div class="jv-footer-main">
       <div class="jv-footer-brand">
-        <img src="<?= BASE_URL ?>img/logo jv.png" alt="<?= sanitize($siteName) ?>" style="height:48px;margin-bottom:12px">
+        <img src="<?= BASE_URL ?>img/logojvm.png" alt="<?= sanitize($siteName) ?>" style="height:48px;margin-bottom:12px">
         <p>Tu tienda online de confianza. Ofrecemos productos de calidad y servicios profesionales con entrega a todo el país.</p>
         <div class="jv-footer-social">
           <?php if($fb): ?><a href="<?=$fb?>" target="_blank"><i class="fab fa-facebook-f"></i></a><?php endif; ?>
