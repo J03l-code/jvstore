@@ -120,22 +120,37 @@ function getProductImage($imagen)
     if (!$imagen) {
         return BASE_URL . 'img/no-image.png';
     }
-    // Strip 'uploads/' or 'uploads/productos/' prefix if present (old format)
+    
+    // Si viene con el prefijo completo de servicios
+    $cleanName = $imagen;
+    if (strpos($cleanName, 'uploads/servicios/') === 0) {
+        $cleanName = substr($cleanName, strlen('uploads/servicios/'));
+        if (file_exists(__DIR__ . '/../uploads/servicios/' . $cleanName)) {
+            return UPLOAD_URL . 'servicios/' . $cleanName;
+        }
+    }
+    
+    // Limpieza estándar de prefijos para productos
     $cleanName = $imagen;
     if (strpos($cleanName, 'uploads/productos/') === 0) {
         $cleanName = substr($cleanName, strlen('uploads/productos/'));
     } elseif (strpos($cleanName, 'uploads/') === 0) {
         $cleanName = substr($cleanName, strlen('uploads/'));
     }
-    // Check in uploads/productos/ directory
+    
+    // Verificar en la carpeta de productos
     if (file_exists(__DIR__ . '/../uploads/productos/' . $cleanName)) {
         return UPLOAD_URL . 'productos/' . $cleanName;
     }
-    // Check in uploads/ directory (legacy flat upload)
+    // Verificar en la carpeta de servicios (por si se pasó sin prefijo)
+    if (file_exists(__DIR__ . '/../uploads/servicios/' . $cleanName)) {
+        return UPLOAD_URL . 'servicios/' . $cleanName;
+    }
+    // Verificar en la raíz de uploads (legado)
     if (file_exists(__DIR__ . '/../uploads/' . $cleanName)) {
         return UPLOAD_URL . $cleanName;
     }
-    // Check if full relative path works from root
+    // Verificar si la ruta relativa es válida desde la raíz
     if (file_exists(__DIR__ . '/../' . $imagen)) {
         return BASE_URL . $imagen;
     }
