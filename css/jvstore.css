@@ -332,3 +332,10 @@ h1,h2,h3,h4,h5,h6{font-family:var(--font-display);font-weight:700;letter-spacing
   color: rgba(255, 255, 255, 0.5) !important;
 }
 
+/* Asegurar que el título de la página en la cabecera (page-header) sea blanco */
+.page-header h1,
+.page-header .container h1 {
+  color: #ffffff !important;
+}
+
+
